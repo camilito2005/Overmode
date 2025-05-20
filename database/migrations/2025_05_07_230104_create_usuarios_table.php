@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->unsignedBigInteger('rol_id')->nullable();
             $table->foreign('rol_id')->references('id')->on('roles')->onDelete('set null');
+            $table->rememberToken();// Token para recordar la sesión
             $table->timestamps();
         });
     }
