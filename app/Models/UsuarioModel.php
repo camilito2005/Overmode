@@ -2,30 +2,41 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
-class UsuarioModel extends Model
+class UsuarioModel extends Authenticatable implements CanResetPassword
 {
-    //
-    protected $table = 'usuarios'; // Nombre de la tabla en la base de datos
+    use HasFactory, Notifiable, CanResetPasswordTrait;
+
+    protected $table = 'usuarios';
+
     protected $fillable = [
         'nombre',
+        'apellido',
         'password',
         'direccion',
         'telefono',
         'ciudad',
         'email',
         'rol_id'
-    ]; // Campos que se pueden asignar masivamente
+    ]; // Campos que se pueden llenar masivamente
+
     protected $hidden = [
         'password',
-    ]; // Campos que no se mostrarán en las respuestas JSON
-    public function rol() // Relación con el modelo RolModel
+        'remember_token',
+    ]; // Campos que se ocultan al serializar el modelo
+
+    public function rol()
     {
-        return $this->belongsTo(RolModel::class, 'rol_id'); // Cambia 'rol_id' por el nombre de la clave foránea en tu tabla usuarios
+        return $this->belongsTo(RolModel::class, 'rol_id');
     }
-    public function getAuthPassword() // Método para obtener la contraseña
+
+    public function getAuthPassword()
     {
         return $this->password;
     }
