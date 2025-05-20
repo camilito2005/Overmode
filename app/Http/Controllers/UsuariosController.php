@@ -8,6 +8,7 @@ use App\Models\Rolmodel;
 
 class UsuariosController extends Controller
 {
+    
     //
     public function index()
     {
@@ -15,7 +16,14 @@ class UsuariosController extends Controller
     }
     public function Form_html(){
         $usuario = UsuarioModel::all();
-        $ciudades = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Cartagena'];
+       $ciudad = [
+            'Bogotá', 
+            'Medellín', 
+            'Cali', 
+            'Barranquilla', 
+            'Cartagena',
+            
+        ];
         $roles = Rolmodel::all();
         
         return view('usuarios.formulario', compact('roles','usuario', 'ciudades')); // Pasar los roles a la vista
