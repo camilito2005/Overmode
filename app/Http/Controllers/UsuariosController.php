@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\UsuarioModel;
 use App\Models\Rolmodel;
+use Illuminate\Support\Facades\Auth;
 
 class UsuariosController extends Controller
 {
@@ -15,8 +16,10 @@ class UsuariosController extends Controller
         return view('index');
     }
     public function Form_html(){
+
+
         $usuario = UsuarioModel::all();
-       $ciudad = [
+       $ciudades = [
             'Bogotá', 
             'Medellín', 
             'Cali', 
@@ -39,7 +42,7 @@ class UsuariosController extends Controller
             'telefono' => 'required|string|max:15',
             'ciudad' => 'required|string|max:255',
             'email' => 'required|email|unique:usuarios,email',
-            'rol' => 'required|exists:roles,id',
+            // 'rol' => 'required|exists:roles,id',
         ]);
 
         $usuario = new UsuarioModel();
@@ -51,12 +54,12 @@ class UsuariosController extends Controller
         $usuario->telefono = $request->input('telefono');
         $usuario->ciudad = $request->input('ciudad');
         $usuario->email = $request->input('email');
-        $usuario->rol_id = $request->input('rol');
+        $usuario->rol_id = '1'; // Asignar un rol por defecto (puedes cambiarlo según tus necesidades)
         // dump("nombre: ".$usuario->nombre, "password: ".$usuario->password, "direccion: ".$usuario->direccion, "telefono: ".$usuario->telefono, "ciudad: ".$usuario->ciudad, "email: ".$usuario->email, "rol_id: ".$usuario->rol_id);
         // $usuario->password = Hash::make($request->input('password')); // Encriptar la contraseña
         $usuario->save();
         if ($usuario->save()) {
-        return redirect()->route('usuarios.listar')->with(['mensaje' => 'Usuario registrado exitosamente.', 'tipo' => 'success', 'color' => 'verde']);
+        return redirect()->route('login.html')->with(['mensaje' => 'Usuario registrado exitosamente.', 'tipo' => 'success', 'color' => 'verde']);
         }
         else {
             return redirect()->back()->with(['mensaje' => 'Error al registrar el usuario.', 'tipo' => 'error', 'color' => 'rojo']);
@@ -65,6 +68,14 @@ class UsuariosController extends Controller
     }
     public function Listar()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login.html')->with(['mensaje' => 'Acceso no autorizado.', 'tipo' => 'error', 'color' => 'rojo']);
+           
+        }
+        if (Auth::user()->rol_id != 1) {
+            return redirect()->route('index')->with(['mensaje' => 'No tienes permisos para acceder a esta sección.', 'tipo' => 'error', 'color' => 'rojo']);    
+
+        }
         $usuarios = UsuarioModel::all();
         $roles = Rolmodel::all();
         $ciudades = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Cartagena'];

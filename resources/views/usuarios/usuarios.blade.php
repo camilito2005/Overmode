@@ -30,7 +30,10 @@
                         <th>Rol</th>
                         <th>Teléfono</th>
                         <th>Ciudad</th>
-                        <th>Acciones</th>
+                        @if (Auth::check() && Auth::user()->rol_id == 1)
+                            <th>Acciones</th>
+                        @else
+                        @endif
                     </tr>
                 </thead>
                 <tbody class="text-center">
@@ -43,19 +46,23 @@
                             <td>{{ $usuario->rol->nombre }}</td>
                             <td>{{ $usuario->telefono }}</td>
                             <td>{{ $usuario->ciudad }}</td>
-                            <td>
-                                <div class="d-flex justify-content-center flex-wrap gap-2">
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#modalEditar{{ $usuario->id }}">
-                                        Editar
-                                    </button>
-                                    <form action="{{ route('usuarios.eliminar', $usuario->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                    </form>
-                                </div>
-                            </td>
+                            @if (Auth::check() && Auth::user()->rol_id == 1)
+                                <td>
+                                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#modalEditar{{ $usuario->id }}">
+                                            Editar
+                                        </button>
+                                        <form action="{{ route('usuarios.eliminar', $usuario->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            @else
+                            @endif
+
                         </tr>
 
                         <!-- Modal para editar usuario -->

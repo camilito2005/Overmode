@@ -1,5 +1,12 @@
-@extends('layouts.menu')
-@section('contenido')
+<x-app-layout>
+    
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Registrar') }}
+
+        </h2>
+    </x-slot>
+
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf
@@ -97,4 +104,4 @@
         </div>
     </form>
 </x-guest-layout>
-@endsection
+</x-app-layout>

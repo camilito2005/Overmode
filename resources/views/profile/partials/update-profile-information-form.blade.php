@@ -49,8 +49,8 @@ Actualice la información del perfil y la dirección de correo electrónico de s
                 @endforeach
             </select>
         </div>
-
-        <div>
+        @if (Auth::user()->rol_id == 1)
+            <div>
             <x-input-label for="cargo" :value="__('Cargo')" />
             <select name="cargo" id="cargo" class="mt-1 block w-full">
                 @foreach ($roles as $cargos)
@@ -58,7 +58,9 @@ Actualice la información del perfil y la dirección de correo electrónico de s
                 @endforeach
             </select>
         </div>
-
+        @else
+        @endif
+        
         <div>
             <x-input-label for="email" :value="__('Correo')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />

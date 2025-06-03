@@ -45,7 +45,6 @@ class ProfileController extends Controller
         $request->user()->telefono = $request->telefono; // Asignar el teléfono
         $request->user()->ciudad = $request->ciudad; // Asignar la ciudad
         $request->user()->rol_id = $request->cargo; // Asignar el rol
-        $request->user()->password = bcrypt($request->password); // Encriptar la contraseña
 
 
         if ($request->user()->isDirty('email')) {// isDirty() verifica si el campo ha cambiado
@@ -55,7 +54,7 @@ class ProfileController extends Controller
 
         $request->user()->save(); // Guardar los cambios en el usuario
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('status', 'perfil actulizado'); // Redirigir a la vista de perfil con un mensaje de éxito
     }
 
     /**

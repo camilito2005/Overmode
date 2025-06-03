@@ -9,6 +9,10 @@
         </h2>
 
     </x-slot>
+    @if (session('mensaje'))
+        <div class="alert alert-{{session('tipo')}}">{{ session('mensaje') }}</div>
+        
+    @endif
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
