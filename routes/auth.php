@@ -14,15 +14,15 @@ use App\Http\Controllers\ProfileController;
 
 Route::middleware('guest')->group(function () {
     // Route::get('/dashboard', AuthenticatedSessionController::class, 'Dashboard')->name('dashboard');
-    
-    
+
+
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'Login_From'])
-        ->name('login');
+        ->name('login.html');
 
     Route::post('login', [AuthenticatedSessionController::class, 'Iniciarsesion'])->name('login');
 
@@ -41,12 +41,15 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+
     Route::get('/dashboard', [AuthenticatedSessionController::class, 'Dashboard'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/perfil', [ProfileController::class, 'showProfileForm'])->name('perfil');
+    // Route::get('/perfil', [ProfileController::class, 'showProfileForm'])->name('perfil');
 
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
@@ -71,7 +74,6 @@ Route::middleware('auth')->group(function () {
 
     // Route::match(['get','post']), 'logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    
-    Route::match(['get', 'post'],'logout', [AuthenticatedSessionController::class,'destroy' ])->name('logout');
 
+    Route::match(['get', 'post'], 'logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
