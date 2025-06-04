@@ -98,8 +98,24 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="route('catalogo')">
+                    {{ __('Tienda') }}
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    {{ __('Perfil') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('usuarios.listar')">
+                    {{ __('Usuarios') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('productos.formulario')">
+                    {{ __('Registrar Producto') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('productos.listar')">
+                    {{ __('Productos') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
