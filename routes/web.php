@@ -15,6 +15,7 @@ Route::get('/usuarios/formulario', [UsuariosController::class, 'Form_html'])->na
 Route::post('/usuarios/registrar', [UsuariosController::class, 'Registrar'])->name('usuarios.registrar');
 
 Route::get('/Catalogo', [CatalogoController::class, 'Catalogo'])->name('catalogo');
+Route::get('/catalogo/filtrar', [CatalogoController::class,'Filtrar'])->name('catalogo.filtrar');
 Route::get('/Catalogo/Detalles/{id}', [CatalogoController::class, 'Detalles'])->name('productos.detalles');
 
 Route::middleware('auth')->group(function () {
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/productos/actualizar/{id}', [ProductosController::class, 'Actualizar'])->name('productos.actualizar');
     Route::post('/productos/eliminar/{id}', [ProductosController::class, 'Eliminar'])->name('productos.eliminar');
 
+
     Route::get('/productos/combinaciones', [ProductosController::class, 'Combinaciones'])->name('productos.combinaciones');
 
     Route::post('/categorias/guardar', [CategoriasController::class, 'guardar'])->name('categorias.agregar');
@@ -43,10 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/Tallas/Actualizar/{id}', [TallasController::class, 'Actualizar'])->name('tallas.actualizar');
     Route::delete('/Tallas/Eliminar/{id}', [TallasController::class, 'Eliminar'])->name('tallas.eliminar');
 
-    Route::post('/colores/agregar', [ColoresController::class , 'Agregar'])->name('colores.agregar');
-    Route::put('/colores/Actualizar/{id}', [ColoresController::class , 'Actualizar'])->name('colores.actualizar');
-    Route::delete('/colores/Eliminar/{id}', [ColoresController::class , 'Eliminar'])->name('colores.eliminar');
-
+    Route::post('/colores/agregar', [ColoresController::class, 'Agregar'])->name('colores.agregar');
+    Route::put('/colores/Actualizar/{id}', [ColoresController::class, 'Actualizar'])->name('colores.actualizar');
+    Route::delete('/colores/Eliminar/{id}', [ColoresController::class, 'Eliminar'])->name('colores.eliminar');
 });
 
 require __DIR__ . '/auth.php';
