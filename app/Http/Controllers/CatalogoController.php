@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Productosmodel;
 use App\Models\categoriamodel;
+use App\Models\ColorModel;
 use App\Models\tallamodel;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -14,12 +15,13 @@ class CatalogoController extends Controller
     //
     public function Catalogo()
     {
-        $productos = Productosmodel::all();
-        $productoss = Productosmodel::with(['inventario'])->get(); // 
-        foreach ($productoss as $producto) {
-            $stock = $producto->inventario->sum('stock'); // Sumar el stock de todas las variantes
-        }
-        return view('catalogo.catalogo', compact('productos', 'stock'));
+        $productos = Productosmodel::with('inventario.talla', 'inventario.color')->get();
+        $categorias = categoriamodel::all();
+        $marcas = Productosmodel::distinct()->pluck('marca');
+        $tallas = tallamodel::distinct()->pluck('nombre');
+        $colores = ColorModel::distinct()->pluck('nombre');
+
+        return view('catalogo.catalogo', compact('productos', 'categorias', 'marcas', 'tallas', 'colores'));
     }
     public function Detalles($id)
     {
@@ -43,39 +45,52 @@ class CatalogoController extends Controller
 
         return view('catalogo.catalogo', compact('productos'));
     }
-    public function FiltrarPorCategoria($categoriaId)
-    {
-        $productos = Productosmodel::where('categoria_id', $categoriaId)->get();
-        return view('catalogo.catalogo', compact('productos'));
-    }
-    public function FiltrarPorPrecio(Request $request)
-    {
-        $minPrecio = $request->input('min_precio', 0);
-        $maxPrecio = $request->input('max_precio', 999999);
 
-        $productos = Productosmodel::whereBetween('precio', [$minPrecio, $maxPrecio])->get();
-
-        return view('catalogo.catalogo', compact('productos'));
-    }
-    public function FiltrarPorMarca($marca)
+    public function Filtrar(Request $request)
     {
-        $productos = Productosmodel::where('marca', $marca)->get();
-        return view('catalogo.catalogo', compact('productos'));
-    }
-    public function FiltrarPorTalla($tallaId)
-    {
-        $productos = Productosmodel::whereHas('tallas', function ($query) use ($tallaId) {
-            $query->where('talla_id', $tallaId);
-        })->get();
+        $query = Productosmodel::with('inventario.talla', 'inventario.color');
 
-        return view('catalogo.catalogo', compact('productos'));
-    }
-    public function FiltrarPorColor($colorId)
-    {
-        $productos = Productosmodel::whereHas('colores', function ($query) use ($colorId) {
-            $query->where('color_id', $colorId);
-        })->get();
+        // Filtrar por categoría
+        if ($request->filled('categoria_id')) {
+            $query->where('categoria_id', $request->categoria_id);
+        }
 
-        return view('catalogo.catalogo', compact('productos'));
+        // Filtrar por marca
+        if ($request->filled('marca')) {
+            $query->where('marca', $request->marca);
+        }
+
+        // Filtrar por precio
+        if ($request->filled('min_precio') || $request->filled('max_precio')) {
+            $min = $request->input('min_precio', 0);
+            $max = $request->input('max_precio', 999999);
+            $query->whereBetween('precio', [$min, $max]);
+        }
+
+        // Filtrar por talla (vía inventario)
+        if ($request->filled('talla_id')) {
+            $query->whereHas('inventario.talla', function ($q) use ($request) {
+                $q->where('talla_id', $request->talla_id);
+            });
+        }
+
+        // Filtrar por color (vía inventario)
+        if ($request->filled('color_id')) {
+            $query->whereHas('inventario.color', function ($q) use ($request) {
+                $q->where('color_id', $request->color_id);
+            });
+        }
+
+        $productos = $query->get();
+
+        // También retornamos los filtros disponibles para que la vista no falle
+        $categorias = categoriamodel::all();
+        $marcas = Productosmodel::distinct()->pluck('marca');
+        // $tallas = tallamodel::distinct()->pluck('nombre');
+        $tallas = tallamodel::all();
+        // $colores = ColorModel::distinct()->pluck('nombre');
+        $colores = ColorModel::all();
+
+        return view('catalogo.catalogo', compact('productos', 'categorias', 'marcas', 'tallas', 'colores'));
     }
 }
