@@ -7,57 +7,51 @@
     <title>Overmode - Tienda de Moda</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-@if (Auth::check() && Auth::user()->rol_id == 1)
-@php
-$ruta_formulario = route('register');
-@endphp
-@else
-    @php
-$ruta_formulario = route('usuarios.formulario');
-    @endphp
-@endif
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('index') }}">Overmode</a>
-            @if (Auth::check())
+
+            @auth
                 <a class="navbar-brand">{{ Auth::user()->nombre }}</a>
-            @endif
+            @endauth
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    @if (Auth::check() && Auth::user()->rol_id == 1)
-                        <li class="nav-item"><a class="nav-link active" href="{{ route('index') }}">Inicio</a></li>
-                            {{-- <li class="nav-item"><a class="nav-link"href="{{ $ruta_formulario }}">Registrate</a></li> --}}
-                            <li class="nav-item"><a class="nav-link"href="{{route('productos.combinaciones') }}">combinaciones</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{route('catalogo')}}">Tienda</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('profile.edit') }}">perfil</a></li>
-                        {{-- <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Formulario</a> --}}
-                        <li class="nav-item"><a class="nav-link" href="{{ route('usuarios.listar') }}">Usuarios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('productos.formulario')}}">Registrar P</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('productos.listar')}}">Productos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}">Cerrar Sesión</a></li>
-                    @else
-                        @if (!Auth::check())
-                            <li class="nav-item"><a class="nav-link" href="{{ route('index') }}">Inicio</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{route('catalogo')}}">Tienda</a></li>
-                            <li class="nav-item"><a class="nav-link"href="{{ $ruta_formulario }}">Registrate</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a></li>
-                        @elseif( Auth::user()->rol_id != 1)
-                            {{-- <li class="nav-item"><a class="nav-link" href="{{ route('index') }}">Inicio</a></li> --}}
-                            <li class="nav-item"><a class="nav-link" href="{{route('logout')}}">Tienda</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('profile.edit') }}">perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}">Cerrar Sesión</a></li>
-                        @endif
-                    @endif
+                    {{-- Enlaces para todos --}}
+                    <li class="nav-item"><a class="nav-link" href="{{ route('index') }}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('catalogo') }}">Tienda</a></li>
 
+                    @guest
+                        <li class="nav-item"><a class="nav-link" href="{{ route('usuarios.formulario') }}">Registrate</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a></li>
+                    @endguest
+
+                    @auth
+                        <li class="nav-item"><a class="nav-link" href="{{ route('profile.edit') }}">Perfil</a></li>
+
+                        @if (Auth::user()->rol_id == 1)
+                            <li class="nav-item"><a class="nav-link" href="{{ route('usuarios.listar') }}">Usuarios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('productos.formulario') }}">Registrar
+                                    P</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('productos.listar') }}">Productos</a>
+                            </li>
+                        @endif
+
+                        <li class="nav-item"><a class="nav-link" href="{{ route('logout') }}">Cerrar Sesión</a></li>
+                    @endauth
                 </ul>
             </div>
         </div>
     </nav>
+
+
 
     @if (session('mensaje'))
         @include('layouts.alertas', [
@@ -73,7 +67,7 @@ $ruta_formulario = route('usuarios.formulario');
             <div class="container-fluid py-5 text-center">
                 <h1 class="display-5 fw-bold">Bienvenido a Overmode</h1>
                 <p class="fs-4">Descubre lo último en moda y estilo.</p>
-                <a href="{{route('catalogo')}}" class="btn btn-primary btn-lg">Explorar la tienda</a>
+                <a href="{{ route('catalogo') }}" class="btn btn-primary btn-lg">Explorar la tienda</a>
             </div>
         </div>
 
@@ -87,7 +81,7 @@ $ruta_formulario = route('usuarios.formulario');
                         <div class="card-body">
                             <h5 class="card-title">Producto {{ $i + 1 }}</h5>
                             <p class="card-text">Descripción del producto destacado.</p>
-                            <a href="{{route('catalogo')}}" class="btn btn-outline-primary">Ver más</a>
+                            <a href="{{ route('catalogo') }}" class="btn btn-outline-primary">Ver más</a>
                         </div>
                     </div>
                 </div>
