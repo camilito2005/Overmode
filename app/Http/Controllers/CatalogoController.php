@@ -18,11 +18,19 @@ class CatalogoController extends Controller
         $productos = Productosmodel::with('inventario.talla', 'inventario.color')->get();
         $categorias = categoriamodel::all();
         $marcas = Productosmodel::distinct()->pluck('marca');
-        $tallas = tallamodel::distinct()->pluck('nombre');
-        $colores = ColorModel::distinct()->pluck('nombre');
+
+        // Cambiar aquí: obtener id y nombre
+        $tallas = tallamodel::select('id', 'nombre')->distinct()->get();
+        $colores = ColorModel::select('id', 'nombre')->distinct()->get();
+
+        // $tallas = tallamodel::groupBy('nombre', 'id')->get();
+        // $colores = ColorModel::groupBy('nombre', 'id')->get();
+
+
 
         return view('catalogo.catalogo', compact('productos', 'categorias', 'marcas', 'tallas', 'colores'));
     }
+
     public function Detalles($id)
     {
         $producto = Productosmodel::with('inventario.talla', 'inventario.color')->findOrFail($id); // busca el producto por ID y carga las relaciones de inventario, talla y color
@@ -33,8 +41,10 @@ class CatalogoController extends Controller
 
         $tallasDisponibles = $producto->inventario->where('stock', '>', 0)->pluck('talla.nombre')->unique(); // Obtiene las tallas disponibles del producto
         $coloresDisponibles = $producto->inventario->where('stock', '>', 0)->pluck('color.nombre')->unique(); // Obtiene los colores disponibles del producto
+
+        $relacionados = Productosmodel::where('categoria_id', $producto->categoria_id)->where('id','!=', $producto->id)->limit(4)->get();
         // $stock = $producto->inventario->sum('stock'); // Sumar el stock de todas las variantes
-        return view('catalogo.detalles', compact('producto', 'categoria', 'tallasDisponibles', 'coloresDisponibles', 'stock'));
+        return view('catalogo.detalles', compact('producto', 'categoria', 'tallasDisponibles', 'coloresDisponibles', 'stock','relacionados'));
     }
     public function Buscar(Request $request)
     {
