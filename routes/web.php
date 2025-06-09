@@ -15,8 +15,9 @@ Route::get('/usuarios/formulario', [UsuariosController::class, 'Form_html'])->na
 Route::post('/usuarios/registrar', [UsuariosController::class, 'Registrar'])->name('usuarios.registrar');
 
 Route::get('/Catalogo', [CatalogoController::class, 'Catalogo'])->name('catalogo');
-Route::get('/catalogo/filtrar', [CatalogoController::class,'Filtrar'])->name('catalogo.filtrar');
+Route::get('/catalogo/filtrar', [CatalogoController::class, 'Filtrar'])->name('catalogo.filtrar');
 Route::get('/Catalogo/Detalles/{id}', [CatalogoController::class, 'Detalles'])->name('productos.detalles');
+Route::get('/Catalogo/Buscar', [CatalogoController::class, 'Buscar'])->name('catalogo.buscar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -36,6 +37,9 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/productos/combinaciones', [ProductosController::class, 'Combinaciones'])->name('productos.combinaciones');
+
+
+    Route::post('/Catalogo/Opinion/{id}', [CatalogoController::class, 'Opinion'])->name('catalogo.opinion');
 
     Route::post('/categorias/guardar', [CategoriasController::class, 'guardar'])->name('categorias.agregar');
     Route::put('/categorias/Actualizar/{id}', [CategoriasController::class, 'Actualizar'])->name('categorias.Actualizar');
