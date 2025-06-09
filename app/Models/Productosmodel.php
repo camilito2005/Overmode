@@ -50,10 +50,15 @@ class Productosmodel extends Model
     {
         return $this->belongsToMany(ColorModel::class, 'producto_color', 'producto_id', 'color_id');
     }
+    // public function opiniones()
+    // {
+    //     return $this->hasMany(OpinionModel::class);
+    // }
     public function opiniones()
     {
-        return $this->hasMany(OpinionModel::class);
+        return $this->hasMany(OpinionModel::class, 'producto_id');
     }
+
 
     public function carritoItems()
     {
