@@ -6,7 +6,13 @@
 @endpush
 
 @section('contenido')
-
+    @if (session('mensaje'))
+        @include('layouts.alertas', [
+            'title' => session('type') == 'Danger' ? 'Error' : 'Info',
+            'message' => session('mensaje'),
+            'type' => session('type'),
+        ])
+    @endif
     <div class="container mt-5">
 
         <div class="card shadow-lg border-0 rounded-4">
@@ -117,20 +123,24 @@
                 </div>
             </div>
 
+            <div class="mx-auto mt-4">
+                <h5 class="text-center text-secondary mt-4">¿Quieres ver más productos de esta categoría?</h5>
             @if ($relacionados->count() >= 4)
-                <form action="{{ route('catalogo.filtrar') }}" method="GET">
+                <form style="text-align: center" action="{{ route('catalogo.filtrar') }}" method="GET">
                     @csrf
                     <input type="hidden" name="categoria_id" value="{{ $categoria->id }}">
-                    <input type="submit" value="ver mas">
+                    <input class="btn btn-outline-primary btn-sm rounded-pill px-3"  type="submit" value="ver mas">
                 </form>
             @endif
+            
         @endif
 
         {{-- Opiniones --}}
         <div class="mt-5 mb-5">
             <h5 class="text-center text-primary mb-4 fw-bold">Deja tu opinión sobre este producto</h5>
             @auth
-                <form action="" method="POST" class="mx-auto p-4 bg-white shadow rounded-4" style="max-width: 600px;">
+                <form action="{{ route('catalogo.opinion', $producto->id) }}" method="POST"
+                    class="mx-auto p-4 bg-white shadow rounded-4" style="max-width: 600px;">
                     @csrf
                     <div class="mb-3 text-center">
                         <label class="form-label d-block fw-semibold">Calificación:</label>
@@ -139,7 +149,7 @@
                                 <i class="bi bi-star fs-3 text-secondary star" data-value="{{ $i }}"></i>
                             @endfor
                         </div>
-                        <input type="hidden" name="calificacion" id="calificacion" required>
+                        <input type="hidden" name="calificacion" value="3" id="calificacion" required>
                     </div>
 
                     <div class="mb-3">
@@ -161,6 +171,88 @@
             @endauth
         </div>
 
+        {{-- <div class="mt-5">
+            <h5 class="text-center text-primary mb-4 fw-bold">Opiniones recientes</h5>
+
+            @if ($opiniones->count() > 0)
+                <div class="row justify-content-center">
+                    @foreach ($opinionesVisible as $op)
+                        <div class="col-md-8 mb-3">
+                            <div class="border rounded-4 p-3 shadow-sm bg-light">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong>{{ $op->usuario->nombre }}</strong>
+                                    <div>
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <i
+                                                class="bi {{ $i <= $op->calificacion ? 'bi-star-fill text-warning' : 'bi-star text-secondary' }}"></i>
+                                        @endfor
+                                    </div>
+                                </div>
+                                <p class="mb-0">{{ $op->comentario }}</p>
+                                <small class="text-muted">{{ $op->created_at->diffForHumans() }}</small>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                @if ($opiniones->count() > 3)
+                    <div class="text-center mt-3">
+                        <button class="btn btn-outline-primary" id="verTodasBtn">
+                            Ver todas las opiniones
+                        </button>
+                    </div>
+
+                    <div id="todasOpiniones" class="mt-4 d-none">
+                        @foreach ($opiniones->skip(3) as $op)
+                            <div class="col-md-8 mx-auto mb-3">
+                                <div class="border rounded-4 p-3 shadow-sm bg-white">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong>{{ $op->usuario->nombre }}</strong>
+                                        <div>
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i
+                                                    class="bi {{ $i <= $op->calificacion ? 'bi-star-fill text-warning' : 'bi-star text-secondary' }}"></i>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">{{ $op->comentario }}</p>
+                                    <small class="text-muted">{{ $op->created_at->diffForHumans() }}</small>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            @else
+                <p class="text-center text-muted">Este producto aún no tiene opiniones.</p>
+            @endif
+        </div> --}}
+
+        <h4>Opiniones de los usuarios</h4>
+
+        @foreach ($opiniones as $opinion)
+            <div class="card mb-2">
+                <div class="card-body">
+                    <p><strong>{{ $opinion->usuario->nombre ?? 'Anónimo' }}</strong></p>
+                    <div>
+                        @for ($i = 1; $i <= 5; $i++)
+                            <i
+                                class="bi {{ $i <= $opinion->calificacion ? 'bi-star-fill text-warning' : 'bi-star text-secondary' }}"></i>
+                        @endfor
+                    </div>
+                    <p>{{ $opinion->comentario }}</p>
+                    <small class="text-muted">{{ $opinion->created_at->diffForHumans() }}</small>
+                </div>
+            </div>
+        @endforeach
+
+        {{-- Enlaces de paginación --}}
+        <div class="d-flex justify-content-center mt-3">
+            {{ $opiniones->links('pagination::bootstrap-5') }}
+        </div>
+
+
+
+
     </div>
 
     @php
@@ -174,6 +266,7 @@
     @endphp
 
     @push('js')
+    
         <script src="{{ asset('js/detalles.js') }}"></script>
 
         <script>
