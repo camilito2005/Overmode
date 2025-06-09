@@ -3,6 +3,7 @@
     catalogo
 @endsection
 @push('css')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/catalogo.css') }}">
     <!-- En tu layout (ej. layouts.menu) -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -80,8 +81,9 @@
             <!-- Productos -->
             <div class="col-md-9">
                 <div class="input-search text-center mb-3">
-                    <input type="search" id="search" class="form-control mx-auto" placeholder="Buscar producto..."
-                        style="max-width: 300px;">
+                    {{-- <input type="search"  id="search" class="form-control mx-auto"
+                        placeholder="Buscar producto..." style="max-width: 300px;"> --}}
+                    <input type="search" id="search" class="form-control mb-4" placeholder="Buscar productos...">
                 </div>
 
                 @if (session('mensaje'))
@@ -100,7 +102,7 @@
                     </div>
                 @endif
 
-                <div class="row">
+                <div class="row" id="resultado-productos">
                     @forelse ($productos as $producto)
                         <div class="col-6 col-sm-4 col-md-3 mb-4">
                             <div class="card h-100 shadow-sm">
@@ -140,11 +142,14 @@
     </div>
 
     @push('js')
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{{ asset('js/buscador.js') }}"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <script>
+            const urlBuscar = "{{ route('catalogo.buscar') }}";
+            const rutadetalles = "{{ route('productos.detalles', 'id') }}";
+            const csrfToken = "{{ csrf_token() }}";
             $(document).ready(function() {
                 $('.select2').select2({
                     placeholder: "Seleccionar",
