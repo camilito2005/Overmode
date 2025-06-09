@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Productosmodel;
 use App\Models\categoriamodel;
 use App\Models\ColorModel;
+use App\Models\OpinionModel;
 use App\Models\tallamodel;
-use Illuminate\Container\Attributes\Auth;
+use App\Models\UsuarioModel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CatalogoController extends Controller
@@ -42,18 +44,24 @@ class CatalogoController extends Controller
         $tallasDisponibles = $producto->inventario->where('stock', '>', 0)->pluck('talla.nombre')->unique(); // Obtiene las tallas disponibles del producto
         $coloresDisponibles = $producto->inventario->where('stock', '>', 0)->pluck('color.nombre')->unique(); // Obtiene los colores disponibles del producto
 
-        $relacionados = Productosmodel::where('categoria_id', $producto->categoria_id)->where('id','!=', $producto->id)->limit(4)->get();
+        $relacionados = Productosmodel::where('categoria_id', $producto->categoria_id)->where('id', '!=', $producto->id)->limit(4)->get();
+
+        $opiniones = $producto->opiniones()->latest()->paginate(3);
+
+        // $opinionesVisible = $opiniones->take(3); // Solo las 3 primeras
         // $stock = $producto->inventario->sum('stock'); // Sumar el stock de todas las variantes
-        return view('catalogo.detalles', compact('producto', 'categoria', 'tallasDisponibles', 'coloresDisponibles', 'stock','relacionados'));
+        return view('catalogo.detalles', compact('producto', 'categoria', 'tallasDisponibles', 'coloresDisponibles', 'stock', 'relacionados','opiniones'));
     }
     public function Buscar(Request $request)
     {
-        $query = $request->input('query');
-        $productos = Productosmodel::where('nombre', 'like', '%' . $query . '%')
-            ->orWhere('descripcion', 'like', '%' . $query . '%')
-            ->get();
+        $search = $request->input('search');
 
-        return view('catalogo.catalogo', compact('productos'));
+        $productos = Productosmodel::where('nombre', 'ilike', '%' . $search . '%')
+            ->orWhere('descripcion', 'ilike', '%' . $search . '%')
+            ->get();
+             return response()->json($productos);
+
+        return response()->json([]);
     }
 
     public function Filtrar(Request $request)
@@ -102,5 +110,30 @@ class CatalogoController extends Controller
         $colores = ColorModel::all();
 
         return view('catalogo.catalogo', compact('productos', 'categorias', 'marcas', 'tallas', 'colores'));
+    }
+    public function Opinion(Request $request, $id)
+    {
+        $request->validate([
+            'calificacion' => 'required|numeric|min:0',
+            'comentario' => 'required|string|max:1000',
+        ]);
+
+        $usuario = Auth::user()->id;
+
+        $opinion = OpinionModel::create([
+            'usuario_id' => $usuario,
+            'producto_id' => $id,
+            'calificacion' => $request->input('calificacion'),
+            'comentario' => $request->input('comentario'),
+        ]);
+
+        if ($opinion) {
+            return redirect()->back()->with('mensaje', 'su opinion a sido guardada exitosamente.');
+        } else {
+            return redirect()->back()->with('error', 'Error al guardar la categoría.');
+        }
+    }
+    public function ListarOpinion(){
+        
     }
 }
