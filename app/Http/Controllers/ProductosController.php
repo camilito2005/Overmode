@@ -8,8 +8,8 @@ use App\Models\categoriamodel;
 use App\Models\TallaModel;
 use App\Models\ColorModel;
 use App\Models\InventarioModel;
+use Illuminate\Support\Facades\Auth;
 
-use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProductosController extends Controller
@@ -22,7 +22,10 @@ class ProductosController extends Controller
     }
     public function Formulario()
     {
-
+        if (Auth::user()->rol_id != 1) {
+            return redirect()->route('index')->with(['mensaje' => 'No tienes permisos para acceder a esta sección.', 'tipo' => 'error', 'color' => 'rojo']);    
+            
+        }
         $colores = ColorModel::all(); // Obtener todos los colores
         $tallas = TallaModel::all(); // Obtener todas las tallas
         $categorias = categoriamodel::all();
@@ -85,6 +88,10 @@ class ProductosController extends Controller
     }
 
     public function Listar(){
+        if (Auth::user()->rol_id != 1) {
+            return redirect()->route('index')->with(['mensaje' => 'No tienes permisos para acceder a esta sección.', 'tipo' => 'error', 'color' => 'rojo']);    
+            
+        }
         // $productoss = Productosmodel::with(['inventario'])->get(); // 
         $productos = Productosmodel::with(['categoria', 'inventario.talla', 'inventario.color'])->get();
 
