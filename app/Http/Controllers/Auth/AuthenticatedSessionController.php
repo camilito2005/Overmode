@@ -40,13 +40,13 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
             $usuario = Auth::user();
             if ($usuario->rol_id == 1) {
-                return redirect()->route('dashboard');
+                return redirect()->route('catalogo');
             }
             if ($usuario->rol_id == 2) {
-                return redirect()->route('usuarios.listar');
+                return redirect()->route('catalogo');
             }
             if ($usuario->rol_id == 3) {
-                return redirect()->route('usuarios.listar');
+                return redirect()->route('catalogo');
             }
             if (! in_array($usuario->rol_id, [1, 2, 3])) {
                 return back()->withErrors(['email' => 'No tienes permisos para acceder a esta aplicación']);
