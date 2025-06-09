@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
             $table->text('comentario');
             $table->integer('calificacion'); // ejemplo: 1-5 estrellas
-            $table->timestamp('fecha')->useCurrent();
             $table->timestamps();
         });
     }
