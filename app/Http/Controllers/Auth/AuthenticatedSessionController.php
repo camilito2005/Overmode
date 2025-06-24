@@ -57,6 +57,10 @@ class AuthenticatedSessionController extends Controller
         return back()->withErrors(['email' => 'Correo o contraseña incorrectos']);
     }
 
+    public function sinclocalstorague(){
+        
+    }
+
     /**
      * Destroy an authenticated session.
      */
