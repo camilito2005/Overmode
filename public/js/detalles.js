@@ -1,115 +1,147 @@
-
-
-
-
-let talla = null,
-    color = null;
-const cantidadInput = document.getElementById('cantidad');
-const btnAgregar = document.getElementById('btnAgregar');
+// =====================
+// VARIABLES Y ELEMENTOS
+// =====================
+const tallaChips = document.querySelectorAll('.talla-chip');
+const colorChips = document.querySelectorAll('.color-chip');
+const inputTalla = document.getElementById('tallaSeleccionada');
+const inputColor = document.getElementById('colorSeleccionado');
+const inputCantidad = document.getElementById('cantidad');
 const stockInfo = document.getElementById('stock-info');
+const btnAgregar = document.getElementById('btnAgregar');
 
-document.querySelectorAll('.talla-chip').forEach(el => {
-    el.addEventListener('click', () => {
-        document.querySelectorAll('.talla-chip').forEach(chip => chip.classList.remove('selected'));
-        el.classList.add('selected');
-        talla = el.dataset.talla;
-        document.getElementById('tallaSeleccionada').value = talla;
-        actualizarStock();
-    });
-});
+let tallaSeleccionada = null;
+let colorSeleccionada = null;
 
-document.querySelectorAll('.color-chip').forEach(el => {
-    el.addEventListener('click', () => {
-        document.querySelectorAll('.color-chip').forEach(chip => chip.classList.remove('selected'));
-        el.classList.add('selected');
-        color = el.dataset.color;
-        document.getElementById('colorSeleccionado').value = color;
-        actualizarStock();
-    });
-});
+// =====================
+// ACTUALIZAR STOCK Y HABILITAR BOTÓN
+// =====================
+function actualizarEstado() {
+    if (tallaSeleccionada && colorSeleccionada) {
+        const item = inventario.find(i =>
+            i.talla_id == tallaSeleccionada && i.color_id == colorSeleccionada
+        );
 
-cantidadInput.addEventListener('input', () => {
-    actualizarStock();
-});
-
-function actualizarStock() {
-    btnAgregar.disabled = true;
-    stockInfo.innerText = '';
-    if (!talla || !color) return;
-    const combinacion = inventario.find(item => item.talla === talla && item.color === color);
-    if (combinacion) {
-        cantidadInput.max = combinacion.stock;
-        stockInfo.innerText = `Stock disponible para esta combinación: ${combinacion.stock}`;
-        if (parseInt(cantidadInput.value) <= combinacion.stock && combinacion.stock > 0) {
-            btnAgregar.disabled = false;
+        if (item) {
+            stockInfo.textContent = `Stock disponible: ${item.stock}`;
+            inputCantidad.max = item.stock;
+            inputCantidad.disabled = false;
+            btnAgregar.disabled = item.stock <= 0;
+        } else {
+            stockInfo.textContent = "Combinación no disponible.";
+            inputCantidad.disabled = true;
+            btnAgregar.disabled = true;
         }
     } else {
-        stockInfo.innerText = 'No hay stock para esta combinación';
+        stockInfo.textContent = "";
+        inputCantidad.disabled = true;
+        btnAgregar.disabled = true;
     }
+
+    // Actualizar inputs ocultos del formulario
+    inputTalla.value = tallaSeleccionada || '';
+    inputColor.value = colorSeleccionada || '';
 }
 
-// Estrellas
-const stars = document.querySelectorAll('.star-rating .star');
-const calificacionInput = document.getElementById('calificacion');
-let rating = 0;
-
-stars.forEach((star, index) => {
-    star.addEventListener('mouseover', () => {
-        resetStars();
-        highlightStars(index);
-    });
-
-    star.addEventListener('mouseout', () => {
-        resetStars();
-        if (rating > 0) highlightStars(rating - 1, true);
-    });
-
-    star.addEventListener('click', () => {
-        rating = index + 1;
-        calificacionInput.value = rating;
-        resetStars();
-        highlightStars(index, true);
+// =====================
+// EVENTOS DE SELECCIÓN DE TALLA Y COLOR
+// =====================
+tallaChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+        tallaChips.forEach(c => c.classList.remove('active', 'selected'));
+        chip.classList.add('active', 'selected');
+        tallaSeleccionada = chip.dataset.talla;
+        actualizarEstado();
     });
 });
 
-// Función para resaltar las estrellas al pasar el mouse
-function highlightStars(index) {
-    for (let i = 0; i <= index; i++) {
-        stars[i].classList.add('hovered');
+colorChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+        colorChips.forEach(c => c.classList.remove('active', 'selected'));
+        chip.classList.add('active', 'selected');
+        colorSeleccionada = chip.dataset.color;
+        actualizarEstado();
+    });
+});
+
+// =====================
+// EVENTO DOM CARGADO
+// =====================
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formAgregarCarrito');
+    console.log(form);
+
+    // ⚠️ CORREGIDO:
+    // Antes: const auth = '{{ Auth::check() ? '1' : '0' }}'; (esto no funciona en archivos JS externos)
+    // Ahora: auth es leído como atributo data en el HTML (recomiendo usar: <meta name="auth" content="{{ Auth::check() }}">)
+    const auth = document.querySelector('meta[name="auth"]')?.content || '0';
+
+    // =====================
+    // FORMULARIO: AGREGAR AL CARRITO
+    // =====================
+    if (form) {
+        form.addEventListener('submit', async function (e) {
+            // Si no está autenticado, manejar con LocalStorage
+            if (auth === '0') {
+                e.preventDefault(); // Prevenir envío por navegador
+
+                const formData = new FormData(form);
+                console.log('Datos del formulario:', Object.fromEntries(formData.entries()));
+                // Validar que se haya seleccionado talla y color
+
+                const data = Object.fromEntries(formData.entries());
+                console.log('Datos del formulario:', data);
+
+                if (!data.talla_id || !data.color_id) {
+                    alert('Por favor selecciona una talla y un color.');
+                    return;
+                }
+
+                try {
+                    const res = await fetch(form.action, { // Enviar datos al servidor
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: formData
+                    });
+
+                    if (res.ok) {
+                        const producto = {
+                            producto_id: data.producto_id,
+                            talla_id: data.talla_id,
+                            color_id: data.color_id,
+                            nombre: data.nombre,
+                            descripcion: data.descripcion,
+                            precio: data.precio,
+                            foto: data.foto,
+                            cantidad: parseInt(data.cantidad),
+                        };
+
+                        let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+                        // Verificar si ya está en el carrito
+                        const existente = carrito.find(item =>
+                            item.producto_id === producto.producto_id &&
+                            item.talla_id === producto.talla_id &&
+                            item.color_id === producto.color_id
+                        );
+
+                        if (existente) {
+                            existente.cantidad += producto.cantidad;
+                        } else {
+                            carrito.push(producto);
+                        }
+
+                        localStorage.setItem('carrito', JSON.stringify(carrito));
+                        alert('Producto agregado al carrito local.');
+                    } else {
+                        alert('Error al intentar agregar el producto.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al agregar el producto.');
+                }
+            }
+        });
     }
-}
-
-// Función para marcar las estrellas seleccionadas
-function selectStars(ratingValue) {
-    stars.forEach((star, i) => {
-        star.classList.remove('selected');
-        if (i < ratingValue) {
-            star.classList.add('selected');
-        }
-    });
-}
-
-// Función para reiniciar los estilos
-function resetStars() {
-    stars.forEach(star => {
-        star.classList.remove('hovered');
-    });
-}
-
-// Eventos para cada estrella
-stars.forEach((star, index) => {
-    star.addEventListener('mouseover', () => {
-        resetStars();
-        highlightStars(index);
-    });
-
-    star.addEventListener('mouseout', () => {
-        resetStars();
-    });
-
-    star.addEventListener('click', () => {
-        rating = index + 1;
-        calificacionInput.value = rating;
-        selectStars(rating);
-    });
 });
