@@ -35,23 +35,41 @@ class CatalogoController extends Controller
 
     public function Detalles($id)
     {
-        $producto = Productosmodel::with('inventario.talla', 'inventario.color')->findOrFail($id); // busca el producto por ID y carga las relaciones de inventario, talla y color
+        $producto = Productosmodel::with('inventario.talla', 'inventario.color')->findOrFail($id);
 
-        $stock = $producto->inventario->sum('stock'); // Sumar el stock de todas las variantes
+        $stock = $producto->inventario->sum('stock');
+        $categoria = categoriamodel::find($producto->categoria_id);
 
-        $categoria = categoriamodel::find($producto->categoria_id); // Obtiene la categoría del producto
+        $tallasDisponibles = $producto->inventario
+            ->where('stock', '>', 0)
+            ->mapWithKeys(function ($item) {
+                return [$item->talla->id => $item->talla->nombre];
+            })->unique();
 
-        $tallasDisponibles = $producto->inventario->where('stock', '>', 0)->pluck('talla.nombre')->unique(); // Obtiene las tallas disponibles del producto
-        $coloresDisponibles = $producto->inventario->where('stock', '>', 0)->pluck('color.nombre')->unique(); // Obtiene los colores disponibles del producto
+        $coloresDisponibles = $producto->inventario
+            ->where('stock', '>', 0)
+            ->mapWithKeys(function ($item) {
+                return [$item->color->id => $item->color->nombre];
+            })->unique();
 
-        $relacionados = Productosmodel::where('categoria_id', $producto->categoria_id)->where('id', '!=', $producto->id)->limit(4)->get();
+        $relacionados = Productosmodel::where('categoria_id', $producto->categoria_id)
+            ->where('id', '!=', $producto->id)
+            ->limit(4)
+            ->get();
 
         $opiniones = $producto->opiniones()->latest()->paginate(3);
 
-        // $opinionesVisible = $opiniones->take(3); // Solo las 3 primeras
-        // $stock = $producto->inventario->sum('stock'); // Sumar el stock de todas las variantes
-        return view('catalogo.detalles', compact('producto', 'categoria', 'tallasDisponibles', 'coloresDisponibles', 'stock', 'relacionados','opiniones'));
+        return view('catalogo.detalles', compact(
+            'producto',
+            'categoria',
+            'tallasDisponibles',
+            'coloresDisponibles',
+            'stock',
+            'relacionados',
+            'opiniones'
+        ));
     }
+
     public function Buscar(Request $request)
     {
         $search = $request->input('search');
@@ -59,7 +77,7 @@ class CatalogoController extends Controller
         $productos = Productosmodel::where('nombre', 'ilike', '%' . $search . '%')
             ->orWhere('descripcion', 'ilike', '%' . $search . '%')
             ->get();
-             return response()->json($productos);
+        return response()->json($productos);
 
         return response()->json([]);
     }
@@ -133,7 +151,5 @@ class CatalogoController extends Controller
             return redirect()->back()->with('error', 'Error al guardar la categoría.');
         }
     }
-    public function ListarOpinion(){
-        
-    }
+    public function ListarOpinion() {}
 }
