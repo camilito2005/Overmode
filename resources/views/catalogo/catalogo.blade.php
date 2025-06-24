@@ -125,7 +125,7 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <a href="" class="btn btn-info">
+                    <a href="{{route('carrito.ver')}}" class="btn btn-info">
                         <i class="fa-solid fa-cart-shopping"></i> Ver carrito
                     </a>
                 </div>
