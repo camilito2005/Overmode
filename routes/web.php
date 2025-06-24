@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\CarritoControllers;
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\TallasController;
 use App\Http\Controllers\ColoresController;
@@ -18,6 +19,12 @@ Route::get('/Catalogo', [CatalogoController::class, 'Catalogo'])->name('catalogo
 Route::get('/catalogo/filtrar', [CatalogoController::class, 'Filtrar'])->name('catalogo.filtrar');
 Route::get('/Catalogo/Detalles/{id}', [CatalogoController::class, 'Detalles'])->name('productos.detalles');
 Route::get('/Catalogo/Buscar', [CatalogoController::class, 'Buscar'])->name('catalogo.buscar');
+
+Route::post('/Carrito/Agregar', [CarritoControllers::class, 'AggCarrito'])->name('carrito.agregar');
+Route::get('/Carrito/Ver', [CarritoControllers::class, 'VerCarrito'])->name('carrito.ver');
+Route::post('/Carrito/Actualizar', [CarritoControllers::class, 'ActualizarCarrito'])->name('carrito.actualizar');
+Route::delete('/Carrito/Eliminar/{id}', [CarritoControllers::class, 'EliminarItem'])->name('carrito.eliminar');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -52,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/colores/agregar', [ColoresController::class, 'Agregar'])->name('colores.agregar');
     Route::put('/colores/Actualizar/{id}', [ColoresController::class, 'Actualizar'])->name('colores.actualizar');
     Route::delete('/colores/Eliminar/{id}', [ColoresController::class, 'Eliminar'])->name('colores.eliminar');
+
+    Route::post('/sincronizar-carrito' , [CarritoControllers::class, 'Sincronizar'])->name('sincronizar');
 });
 
 require __DIR__ . '/auth.php';
