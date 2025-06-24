@@ -66,7 +66,7 @@ class CarritoControllers extends Controller
                     return back()->with('error', 'No hay suficiente stock disponible para agregar más unidades.');
                 }
 
-                $item->cantidad += $nuevaCantidad;
+                $item->cantidad = $nuevaCantidad;
                 $item->subtotal = $nuevaCantidad * $precio; // Actualizar el subtotal si es necesario
                 // $item->precio = $precio; // Actualizar el precio si es necesario
                 $item->save();
