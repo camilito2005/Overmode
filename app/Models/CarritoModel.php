@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\CarritoItemModel;
 
-class Carrito extends Model
+class CarritoModel extends Model
 {
     use HasFactory;
 
@@ -15,6 +15,8 @@ class Carrito extends Model
     protected $fillable = [
         'usuario_id',
         'estado', // ejemplo: activo, pendiente, comprado
+        'activo', // 
+
     ];
 
     public function usuario()
@@ -24,6 +26,6 @@ class Carrito extends Model
 
     public function items()
     {
-        return $this->hasMany(PedidoItem::class, 'pedido_id');
+        return $this->hasMany(CarritoItemModel::class, 'carrito_id');
     }
 }
