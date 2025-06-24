@@ -14,9 +14,13 @@ class CarritoItemModel extends Model
     protected $table = 'carritos_item';
 
     protected $fillable = [
-        'usuario_id',
+        'carrito_id',
+        'talla_id',
+        'color_id',
         'producto_id',
         'cantidad',
+        'precio_unitario',
+        'subtotal',
     ];
 
     public function usuario()
@@ -27,5 +31,21 @@ class CarritoItemModel extends Model
     public function producto()
     {
         return $this->belongsTo(Productosmodel::class, 'producto_id');
+    }
+    public function carrito()
+    {
+        return $this->belongsTo(CarritoModel::class, 'carrito_id');
+    }
+    public function talla()
+    {
+        return $this->belongsTo(TallaModel::class, 'talla_id');
+    }
+    public function color()
+    {
+        return $this->belongsTo(ColorModel::class, 'color_id');
+    }
+    public function pedidoItems()
+    {
+        return $this->hasMany(PedidoItem::class, 'carrito_item_id');
     }
 }
