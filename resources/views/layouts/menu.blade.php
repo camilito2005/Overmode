@@ -2,6 +2,8 @@
 <html lang="es">
 
 <head>
+    <meta name="auth" content="{{ Auth::check() ? '1' : '0' }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @stack('titulo')
@@ -32,7 +34,8 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('catalogo') }}">Tienda</a></li>
 
                     @guest
-                        <li class="nav-item"><a class="nav-link" href="{{ route('usuarios.formulario') }}">Registrate</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('usuarios.formulario') }}">Registrate</a>
+                        </li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Iniciar Sesión</a></li>
                     @endguest
 
@@ -62,7 +65,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    @push('js')
+        <script src="{{ asset('js/global.js') }}"></script>
+    @endpush
+
     @stack('js')
+
+
 </body>
 
 </html>
