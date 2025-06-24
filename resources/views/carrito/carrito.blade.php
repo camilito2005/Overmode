@@ -95,6 +95,11 @@
                 <a href="{{ route('catalogo') }}" class="btn btn-outline-secondary fw-semibold">
                     <i class="bi bi-arrow-left me-1"></i> Seguir comprando
                 </a>
+
+                <a href="{{ route('carrito.vaciar') }}" class="btn btn-outline-secondary fw-semibold">
+                    <i class=""></i> vaciar carrito
+                </a>
+
                 <a href="" class="btn btn-success fw-semibold">
                     <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
                 </a>
