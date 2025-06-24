@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade'); // ID del producto
             $table->foreignId('talla_id')->constrained('tallas')->onDelete('cascade'); // ID de la talla
             $table->foreignId('color_id')->constrained('colores')->onDelete('cascade'); // ID del color
+            $table->decimal('precio_unitario', 10, 2); // Precio unitario del producto
+            $table->decimal('subtotal', 10, 2); // Subtotal del item (precio_unitario * cantidad)
             $table->integer('cantidad'); // Cantidad del producto en el carrito
             $table->timestamps();
         });
