@@ -1,6 +1,8 @@
 @extends('layouts.menu')
 @section('titulo', 'Detalles')
 @push('css')
+    <meta name="auth" content="{{ Auth::check() ? '1' : '0' }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/detalles_old.css') }}">
 @endpush
@@ -40,23 +42,23 @@
                         <p><i class="bi bi-tags-fill text-warning me-2"></i><strong>Categoría:</strong>
                             {{ $categoria->nombre }}</p>
 
-                        <form action="" method="POST" class="mt-4">
+                        <form id="formAgregarCarrito" action="{{ route('carrito.agregar') }}" method="POST" class="mt-4">
                             @csrf
-                            <input type="hidden" name="id_producto" value="{{ $producto->id }}">
+                            <input type="hidden" name="producto_id" value="{{ $producto->id }}">
                             <input type="hidden" name="nombre" value="{{ $producto->nombre }}">
                             <input type="hidden" name="descripcion" value="{{ $producto->descripcion }}">
                             <input type="hidden" name="precio" value="{{ $producto->precio }}">
                             <input type="hidden" name="foto" value="{{ $producto->imagen_url }}">
 
-                            <input type="hidden" name="talla" id="tallaSeleccionada">
-                            <input type="hidden" name="color" id="colorSeleccionado">
+                            <input type="hidden" name="talla_id" id="tallaSeleccionada">
+                            <input type="hidden" name="color_id" id="colorSeleccionado">
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Talla:</label>
                                 <div>
-                                    @foreach ($tallasDisponibles as $talla)
+                                    @foreach ($tallasDisponibles as $id => $nombre)
                                         <span class="chip talla-chip"
-                                            data-talla="{{ $talla }}">{{ $talla }}</span>
+                                            data-talla="{{ $id }}">{{ $nombre }}</span>
                                     @endforeach
                                 </div>
                             </div>
@@ -64,9 +66,9 @@
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Color:</label>
                                 <div>
-                                    @foreach ($coloresDisponibles as $color)
+                                    @foreach ($coloresDisponibles as $id => $nombre)
                                         <span class="chip color-chip"
-                                            data-color="{{ $color }}">{{ $color }}</span>
+                                            data-color="{{ $id }}">{{ $nombre }}</span>
                                     @endforeach
                                 </div>
                             </div>
@@ -125,14 +127,14 @@
 
             <div class="mx-auto mt-4">
                 <h5 class="text-center text-secondary mt-4">¿Quieres ver más productos de esta categoría?</h5>
-            @if ($relacionados->count() >= 4)
-                <form style="text-align: center" action="{{ route('catalogo.filtrar') }}" method="GET">
-                    @csrf
-                    <input type="hidden" name="categoria_id" value="{{ $categoria->id }}">
-                    <input class="btn btn-outline-primary btn-sm rounded-pill px-3"  type="submit" value="ver mas">
-                </form>
-            @endif
-            
+                @if ($relacionados->count() >= 4)
+                    <form style="text-align: center" action="{{ route('catalogo.filtrar') }}" method="GET">
+                        @csrf
+                        <input type="hidden" name="categoria_id" value="{{ $categoria->id }}">
+                        <input class="btn btn-outline-primary btn-sm rounded-pill px-3" type="submit" value="ver mas">
+                    </form>
+                @endif
+
         @endif
 
         {{-- Opiniones --}}
@@ -170,62 +172,6 @@
                     class="d-block text-center text-decoration-none text-primary fw-semibold">Iniciar sesión</a>
             @endauth
         </div>
-
-        {{-- <div class="mt-5">
-            <h5 class="text-center text-primary mb-4 fw-bold">Opiniones recientes</h5>
-
-            @if ($opiniones->count() > 0)
-                <div class="row justify-content-center">
-                    @foreach ($opinionesVisible as $op)
-                        <div class="col-md-8 mb-3">
-                            <div class="border rounded-4 p-3 shadow-sm bg-light">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <strong>{{ $op->usuario->nombre }}</strong>
-                                    <div>
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <i
-                                                class="bi {{ $i <= $op->calificacion ? 'bi-star-fill text-warning' : 'bi-star text-secondary' }}"></i>
-                                        @endfor
-                                    </div>
-                                </div>
-                                <p class="mb-0">{{ $op->comentario }}</p>
-                                <small class="text-muted">{{ $op->created_at->diffForHumans() }}</small>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                @if ($opiniones->count() > 3)
-                    <div class="text-center mt-3">
-                        <button class="btn btn-outline-primary" id="verTodasBtn">
-                            Ver todas las opiniones
-                        </button>
-                    </div>
-
-                    <div id="todasOpiniones" class="mt-4 d-none">
-                        @foreach ($opiniones->skip(3) as $op)
-                            <div class="col-md-8 mx-auto mb-3">
-                                <div class="border rounded-4 p-3 shadow-sm bg-white">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <strong>{{ $op->usuario->nombre }}</strong>
-                                        <div>
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                <i
-                                                    class="bi {{ $i <= $op->calificacion ? 'bi-star-fill text-warning' : 'bi-star text-secondary' }}"></i>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">{{ $op->comentario }}</p>
-                                    <small class="text-muted">{{ $op->created_at->diffForHumans() }}</small>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            @else
-                <p class="text-center text-muted">Este producto aún no tiene opiniones.</p>
-            @endif
-        </div> --}}
 
         <h4>Opiniones de los usuarios</h4>
 
@@ -266,11 +212,12 @@
     @endphp
 
     @push('js')
-    
         <script src="{{ asset('js/detalles.js') }}"></script>
 
         <script>
-            const inventario = @json($inventarioMapped);
+            const inventario = @json($producto->inventario);
+            // hasta aqui 
+
         </script>
     @endpush
 
