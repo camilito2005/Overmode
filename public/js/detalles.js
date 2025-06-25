@@ -6,6 +6,7 @@ const colorChips = document.querySelectorAll('.color-chip');
 const inputTalla = document.getElementById('tallaSeleccionada');
 const inputColor = document.getElementById('colorSeleccionado');
 const inputCantidad = document.getElementById('cantidad');
+
 const stockInfo = document.getElementById('stock-info');
 const btnAgregar = document.getElementById('btnAgregar');
 
@@ -85,11 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault(); // Prevenir envío por navegador
 
                 const formData = new FormData(form);
-                console.log('Datos del formulario:', Object.fromEntries(formData.entries()));
+                console.log('Datos del formulario 1:', Object.fromEntries(formData.entries()));
                 // Validar que se haya seleccionado talla y color
 
                 const data = Object.fromEntries(formData.entries());
-                console.log('Datos del formulario:', data);
+                console.log('Datos del formulario 2:', data);
 
                 if (!data.talla_id || !data.color_id) {
                     alert('Por favor selecciona una talla y un color.');
@@ -102,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         },
-                        body: formData
+                        body: formData // Enviar FormData directamente
                     });
 
                     if (res.ok) {
@@ -117,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             cantidad: parseInt(data.cantidad),
                         };
 
-                        let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+                        let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');// Obtener carrito del LocalStorage
+                        console.log('Carrito actual:', carrito);
 
                         // Verificar si ya está en el carrito
                         const existente = carrito.find(item =>
