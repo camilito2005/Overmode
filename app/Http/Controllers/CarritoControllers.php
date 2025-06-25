@@ -37,7 +37,7 @@ class CarritoControllers extends Controller
             ->value('stock'); // Obtiene el stock disponible para la combinación de producto, talla y color
 
         if ($stockDisponible < $cantidad) {
-            return back()->with(['mensaje'=> 'No hay suficiente stock disponible.']);
+            return back()->with(['mensaje' => 'No hay suficiente stock disponible.']);
         }
 
         $precio = Productosmodel::findOrFail($producto_id)->precio;
@@ -101,7 +101,7 @@ class CarritoControllers extends Controller
             if ($carrito) { // verifica si el carrito existe
                 $itemprocesados = $carrito->items->map(function ($item) {
                     return [
-                        'item_id' => $item->id,// 
+                        'item_id' => $item->id, // 
                         'producto_id' => $item->producto->id,
                         'nombre' => $item->producto->nombre,
                         'descripcion' => $item->producto->descripcion,
@@ -152,7 +152,7 @@ class CarritoControllers extends Controller
                 $item = CarritoItemModel::where('id', $itemId) //
                     ->where('carrito_id', $carrito->id)
                     ->first(); // Asegurarse de que el ítem pertenece al carrito del usuario
-                   
+
 
                 if ($item) {
                     $item->delete(); // Eliminar el ítem
@@ -203,51 +203,44 @@ class CarritoControllers extends Controller
     }
     public function ActualizarCarrito(Request $request)
     {
+        $request->validate([
+            'id' => 'required|exists:carritos_item,id',
+            'cantidad' => 'required|integer|min:1'
+        ]);
         if (Auth::check()) {
             $usuario_id = Auth::user()->id; // Obtiene el ID del usuario autenticado
+
             $carrito = CarritoModel::where('usuario_id', $usuario_id) // Busca el carrito del usuario autenticado
                 ->where('activo', true)
                 ->first();
 
-            dd($request->input('items'));
-            $items = $request->input('items'); // Obtiene los items del carrito desde la solicitud
-
-            if ($carrito) { // Verifica si el carrito existe
-                foreach ($request->input('items', []) as $itemData) { // 'items' es un array de datos de los items
-                    $item = $carrito->items()->find($itemData['id']); // Busca el item en el carrito por su ID
-                    dd("item : " . $item);
-                    if ($item) { // Verifica si el item existe en el carrito
-
-                        $stockDisponible = InventarioModel::where('producto_id', $item->producto_id)
-                            ->where('talla_id', $item->talla_id)
-                            ->where('color_id', $item->color_id)
-                            ->value('stock'); // Obtiene el stock disponible para la combinación de producto, talla y color
-                        dd("stockDisponible : " . $stockDisponible);
-
-                        if ($itemData['cantidad'] > $stockDisponible) { // Verifica si la cantidad solicitada es mayor que el stock disponible
-                            return redirect()->back()->with('mensaje', 'No hay suficiente stock para actualizar el producto "' . $item->producto->nombre . '"');
-                        }
-                        if ($itemData['cantidad'] < 1) { // Verifica si la cantidad es menor que 1
-                            return redirect()->back()->with('mensaje', 'La cantidad debe ser al menos 1 para el producto "' . $item->producto->nombre . '"');
-                        }
-
-
-                        $item->cantidad = $itemData['cantidad']; // Actualiza la cantidad del item
-
-                        $item->subtotal = $item->cantidad * $item->precio_unitario; // Actualiza el subtotal del item
-
-                        dd("item->subtotal : " . $item->subtotal);
-                        dd("item->cantidad : " . $item->cantidad);
-
-                        $item->save(); // Guarda los cambios en el item
-                    }
-                }
-                return redirect()->back()->with('mensaje', 'Carrito actualizado correctamente.');
-            } else {
+            if (!$carrito) {
                 return redirect()->back()->with('mensaje', 'No se encontró el carrito del usuario.');
+                # code...
             }
+
+            $item = $carrito->items()->find($request->input('id'));
+
+            if (!$item) {
+                return back()->with('mensaje', 'El producto no está en tu carrito.');
+            }
+
+            $stockDisponible = InventarioModel::where('producto_id', $item->producto_id)
+                ->where('talla_id', $item->talla_id)
+                ->where('color_id', $item->color_id)
+                ->value('stock');
+
+            if ($request->cantidad > $stockDisponible) {
+                return back()->with('mensaje', 'No hay suficiente stock disponible para este producto.');
+            }
+
+            $item->cantidad = $request->cantidad;
+            $item->subtotal = $item->cantidad * $item->precio_unitario;
+            $item->save();
+
+            return back()->with('mensaje', 'Producto actualizado correctamente.');
         }
-        return redirect()->back()->with('mensaje', 'No se pudo actualizar el carrito.');
+        return back()->with('mensaje', 'No estás autenticado.');
     }
 
     public function Sincronizar(Request $request)
