@@ -25,6 +25,11 @@
                 'type' => session('type'),
             ])
         @endif
+        @if (!Auth::check())
+        
+            <div id="carrito-local"></div>
+            
+        @endif
 
         @if ($carrito && count($carrito) > 0)
             <div class="table-responsive mb-4">
@@ -111,4 +116,68 @@
             </div>
         @endif
     </div>
+    @push('js')
+        <script>
+            const auth = '{{ Auth::check() ? 1 : 0 }}';
+            if (auth == 0) {
+                const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+                if (carrito.length > 0) {
+                    let html = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>precio</th>
+                            <th>talla</th>
+                            <th>Color</th>
+                            <th>Cantidad</th>
+                            <th>subtotal</th>
+                            <th>accion</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+                    carrito.forEach(item => {
+                        const subtotal = item.precio * item.cantidad;
+                        html += `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="${item.foto}" class="producto-img me-3" alt="${item.nombre}">
+                                <div>
+                                    <strong>${item.nombre}</strong>
+                                    <p class="mb-0 text-muted">${item.descripcion}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>$${Number(item.precio).toLocaleString()}</td>
+                        <td>${item.talla_id}</td>
+                        <td>${item.color_id}</td>
+                        <td>
+                            <input type="number" value="${item.cantidad}" min="1" class="form-control form-control-sm" style="width: 70px;">
+                            <button class="btn btn-sm btn-outline-success mt-1" onclick="actualizarCantidad(${item.item_id}, this.previousElementSibling.value)">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+
+                        </td>
+                        <td>${subtotal}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="eliminarProducto(${item.item_id})">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                    </tr>
+                `;
+                    });
+
+                    html += '</tbody></table>';
+                    document.getElementById('carrito-local').innerHTML = html;
+                } else {
+                    document.getElementById('carrito-local').innerHTML = '<p class="text-muted">Tu carrito está vacío.</p>';
+                }
+            }
+        </script>
+    @endpush
 @endsection
