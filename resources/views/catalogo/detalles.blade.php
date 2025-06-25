@@ -48,7 +48,7 @@
                             <input type="hidden" name="nombre" value="{{ $producto->nombre }}">
                             <input type="hidden" name="descripcion" value="{{ $producto->descripcion }}">
                             <input type="hidden" name="precio" value="{{ $producto->precio }}">
-                            <input type="hidden" name="foto" value="{{ $producto->imagen_url }}">
+                            <input type="hidden" name="foto" id="foto" value="{{ $producto->imagen_url }}">
 
                             <input type="hidden" name="talla_id" id="tallaSeleccionada">
                             <input type="hidden" name="color_id" id="colorSeleccionado">
