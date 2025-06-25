@@ -63,9 +63,10 @@
                                 <td>{{ $item['talla'] ?? 'N/A' }}</td>
                                 <td>{{ $item['color'] ?? 'N/A' }}</td>
                                 <td>
-                                    <form action="{{ route('carrito.actualizar', $item['item_id']) }}" method="POST"
+                                    <form action="{{ route('carrito.actualizar') }}" method="POST"
                                         class="d-flex align-items-center">
                                         @csrf
+                                        <input type="hidden" name="id" value="{{ $item['item_id'] }}">
                                         <input type="number" name="cantidad" value="{{ $item['cantidad'] }}" min="1"
                                             class="form-control form-control-sm me-2" style="width: 70px;">
                                         <button type="submit" class="btn btn-sm btn-outline-success"><i
