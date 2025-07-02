@@ -18,7 +18,8 @@ class ProductosController extends Controller
         $colores = ColorModel::all(); // Obtener todos los colores
         $tallas = TallaModel::all(); // Obtener todas las tallas
         $categorias = categoriamodel::all();
-        return view('tallas_colores_categorias.combinacion', compact('categorias', 'tallas', 'colores'));
+        return redirect()->back()->with(['mensaje' => 'combinacion creada exitosamente', 'tipo' => 'success', 'color' => 'verde']); // Redirigir a la vista de combinaciones con un mensaje de éxito
+        // return view('tallas_colores_categorias.combinacion', compact('categorias', 'tallas', 'colores'));
     }
     public function Formulario()
     {
