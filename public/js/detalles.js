@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         };
 
                         let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');// Obtener carrito del LocalStorage
-                        console.log('Carrito actual:', carrito);
+                        console.log('Carrito local antes de agregar:', carrito);
 
                         // Verificar si ya está en el carrito
                         const existente = carrito.find(item =>
@@ -146,4 +146,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+    });
