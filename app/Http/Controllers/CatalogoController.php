@@ -151,5 +151,4 @@ class CatalogoController extends Controller
             return redirect()->back()->with('error', 'Error al guardar la categoría.');
         }
     }
-    public function ListarOpinion() {}
 }
