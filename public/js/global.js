@@ -2,12 +2,11 @@
 // SINCRONIZAR CARRITO CUANDO INICIA SESIÓN
 // =====================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM completamente cargado y analizado');
     // Verificar si el usuario está autenticado
     const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
     const auth = document.querySelector('meta[name="auth"]')?.content || '0';
 
-    console.log('Carrito local:', carrito);
+    // console.log('Carrito local:', carrito);
     // Si hay productos en el carrito y el usuario está autenticado, sincronizar con el servidor
 
     if (carrito.length > 0 && auth === '1') {
