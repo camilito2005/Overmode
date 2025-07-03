@@ -145,7 +145,6 @@ class CarritoControllers extends Controller
                 ->first();
 
             if ($carrito) {
-                dump($carrito);
                 // Buscar el ítem dentro del carrito
                 // $item = $carrito->items()->find($itemId); //  Aquí se busca el ítem por su ID
                 // Alternativamente, puedes usar:
@@ -207,6 +206,7 @@ class CarritoControllers extends Controller
             'id' => 'required|exists:carritos_item,id',
             'cantidad' => 'required|integer|min:1'
         ]);
+
         if (Auth::check()) {
             $usuario_id = Auth::user()->id; // Obtiene el ID del usuario autenticado
 
