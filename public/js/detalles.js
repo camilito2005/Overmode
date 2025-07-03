@@ -108,18 +108,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (res.ok) {
                         const producto = {
-                            producto_id: data.producto_id,
-                            talla_id: data.talla_id,
-                            color_id: data.color_id,
-                            nombre: data.nombre,
-                            descripcion: data.descripcion,
-                            precio: data.precio,
-                            foto: data.foto,
-                            cantidad: parseInt(data.cantidad),
+                            producto_id: data.producto_id, // ID del producto
+                            talla_id: data.talla_id, // ID de la talla
+                            talla_nombre: document.querySelector(`.talla-chip[data-talla="${data.talla_id}"]`)?.textContent || '', // Nombre de la talla
+                            color_nombre: document.querySelector(`.color-chip[data-color="${data.color_id}"]`)?.textContent || '',// Nombre del color
+                            color_id: data.color_id, // ID del color
+                            nombre: data.nombre, // Nombre del producto
+                            descripcion: data.descripcion, // Descripción del producto
+                            precio: data.precio, // Precio del producto
+                            foto: data.foto,// Foto del producto
+                            cantidad: parseInt(data.cantidad),// Cantidad del producto
                         };
 
                         let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');// Obtener carrito del LocalStorage
-                        console.log('Carrito local antes de agregar:', carrito);
+                        // console.log('Carrito local antes de agregar:', carrito);
 
                         // Verificar si ya está en el carrito
                         const existente = carrito.find(item =>
