@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </td>
                         <td>$${Number(item.precio).toLocaleString()}</td>
-                        <td>${item.talla_id}</td>
-                        <td>${item.color_id}</td>
+                        <td>${item.talla_nombre || item.talla_id}</td>
+                        <td>${item.color_nombre || item.color_id}</td>
                         <td >
                             <form class="d-flex align-items-center actualizar-form">
                                 <input type="hidden" name="producto_id" value="${item.producto_id}">
