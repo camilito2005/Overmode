@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
         if (carrito.length > 0) {
+
+            var total = 0;
             let html = `
                 <table class="table">
                     <thead>
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             carrito.forEach(item => {
                 const subtotal = item.precio * item.cantidad;
+                total += item.precio * item.cantidad;
                 html += `
                     <tr>
                         <td>
@@ -70,10 +73,32 @@ document.addEventListener('DOMContentLoaded', () => {
                             </form>
                         </td>
                     </tr>
+                    
+
+                
                 `;
             });
+            html += `
+            </tbody>
+                    </table>
 
-            html += '</tbody></table>';
+                    <div class="text-end mb-4">
+                    <h3 class="fw-bold">Total: ${Number(total).toLocaleString()}</h3>
+                </div>
+                <div class="d-flex justify-content-between">
+                <a href="{{ route('catalogo') }}" class="btn btn-outline-secondary fw-semibold">
+                    <i class="bi bi-arrow-left me-1"></i> Seguir comprando
+                </a>
+
+                <a href="{{ route('carrito.vaciar') }}" class="btn btn-outline-secondary fw-semibold">
+                    <i class=""></i> vaciar carrito
+                </a>
+
+                <a href="" class="btn btn-success fw-semibold">
+                    <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
+                </a>
+            </div>
+            `;
             document.getElementById('carrito-local').innerHTML = html;
         } else {
             document.getElementById('carrito-local').innerHTML = '<p class="text-muted">Tu carrito está vacío.</p>';
