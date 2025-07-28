@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductosController extends Controller
 {
+    public function Home(){
+        // obtengo 4 productos,los mas recientes
+        $productos = ProductosModel::orderBy('created_at', 'desc')->take(4)->get();
+        // dd($productos);
+        return view('welcome', compact('productos'));
+
+    }
     public function Combinaciones (){
         $colores = ColorModel::all(); // Obtener todos los colores
         $tallas = TallaModel::all(); // Obtener todas las tallas
