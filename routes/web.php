@@ -8,14 +8,14 @@ use App\Http\Controllers\CarritoControllers;
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\TallasController;
 use App\Http\Controllers\ColoresController;
-
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [UsuariosController::class, 'index'])->name('index');
+Route::get('/', [ProductosController::class, 'Home'])->name('index');
 Route::get('/usuarios/formulario', [UsuariosController::class, 'Form_html'])->name('usuarios.formulario');
 Route::post('/usuarios/registrar', [UsuariosController::class, 'Registrar'])->name('usuarios.registrar');
 
 Route::get('/Catalogo', [CatalogoController::class, 'Catalogo'])->name('catalogo');
+Route::get('/Catalogo/catalogo', [CatalogoController::class, 'Productos'])->name('Productos');
 Route::get('/catalogo/filtrar', [CatalogoController::class, 'Filtrar'])->name('catalogo.filtrar');
 Route::get('/Catalogo/Detalles/{id}', [CatalogoController::class, 'Detalles'])->name('productos.detalles');
 Route::get('/Catalogo/Buscar', [CatalogoController::class, 'Buscar'])->name('catalogo.buscar');
