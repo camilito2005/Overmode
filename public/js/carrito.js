@@ -5,6 +5,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const Auth = document.querySelector('meta[name="auth"]').getAttribute('content');
+    const Rutacatalogo = document.querySelector('meta[name="ruta-catalogo"]').getAttribute('content');
+    const RutaVaciar = document.querySelector('meta[name="ruta-vaciar"]').getAttribute('content');
 
     if (Auth == 0) {
         const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
@@ -86,11 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="fw-bold">Total: ${Number(total).toLocaleString()}</h3>
                 </div>
                 <div class="d-flex justify-content-between">
-                <a href="{{ route('catalogo') }}" class="btn btn-outline-secondary fw-semibold">
+                <a href="${Rutacatalogo}" class="btn btn-outline-secondary fw-semibold">
                     <i class="bi bi-arrow-left me-1"></i> Seguir comprando
                 </a>
 
-                <a href="{{ route('carrito.vaciar') }}" class="btn btn-outline-secondary fw-semibold">
+                <a href="${RutaVaciar}" class="btn btn-outline-secondary fw-semibold">
                     <i class=""></i> vaciar carrito
                 </a>
 
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    document.querySelectorAll('.eliminar-form').forEach(form => {
+    document.querySelectorAll('.eliminar-form').forEach(form => { // Manejo del evento submit para eliminar un producto del carrito
         form.addEventListener('submit', e => {
             e.preventDefault();
 
@@ -204,4 +206,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    document.querySelector('#vaciar-carrito').addEventListener('click', e => {
+        e.preventDefault();
+
+        if (auth === '0') {
+            localStorage.removeItem('carrito');
+            alert('Carrito local vaciado.');
+            location.reload();
+        } else {
+            fetch('/carrito/vaciar', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            }).then(res => {
+                if (res.ok) {
+                    alert('Carrito del servidor vaciado.');
+                    location.reload();
+                } else {
+                    alert('Error al vaciar el carrito.');
+                }
+            });
+        }
+    }
+    );
 });
