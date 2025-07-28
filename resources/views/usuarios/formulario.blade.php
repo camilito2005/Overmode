@@ -79,4 +79,8 @@
                 </form>
             </div>
         </div>
-    @endsection
+        <div class="text-center mt-4">
+            <p>¿Ya tienes una cuenta? <a href="{{ route('login') }}">Inicia sesión</a></p>
+        </div>
+    </div>
+@endsection
