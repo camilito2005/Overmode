@@ -1,4 +1,4 @@
-@extends('layouts.menu')
+{{-- @extends('layouts.menu')
 @section('titulo', 'detalles')
 @push('css')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -109,10 +109,10 @@
                     @endforeach
                 </div>
             </div>
-        @endif
+        @endif --}}
 
         {{-- Opiniones --}}
-        <div class="container mt-5 mb-5">
+        {{-- <div class="container mt-5 mb-5">
             <h5 class="text-center text-primary mb-4">Deja tu opinión sobre este producto</h5>
             @auth
                 <form action="" method="POST" class="mx-auto p-4 bg-white shadow rounded-4" style="max-width: 600px;">
@@ -165,4 +165,70 @@ const inventario = @json($inventarioMapped);
 </script>
     @endpush
 
+@endsection --}}
+
+
+
+
+
+@extends('layouts.menu')
+@section('titulo', 'detalles')
+@push('css')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+@endpush
+@section('contenido')
+@push('css')
+   {{-- <link rel="stylesheet" href="{{asset('css/detalles_old.css')}}">  --}}
+@endpush
+
+<!-- ===================== -->
+<!-- CATÁLOGO -->
+<!-- ===================== -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overmode - Catálogo</title>
+  <style>
+    
+    .product img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div><strong>OVERMODE</strong></div>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#">Catálogo</a>
+      <a href="#">Carrito</a>
+    </nav>
+  </header>
+
+  <section class="products">
+    <div class="product">
+      <img src="https://via.placeholder.com/200x250" alt="Sweater" />
+      <h3>Beige Sweater</h3>
+      <p>$49.00</p>
+    </div>
+    <div class="product">
+      <img src="https://via.placeholder.com/200x250" alt="Jacket" />
+      <h3>Off-White Jacket</h3>
+      <p>$79.00</p>
+    </div>
+    <div class="product">
+      <img src="https://via.placeholder.com/200x250" alt="T-Shirt" />
+      <h3>Striped T-Shirt</h3>
+      <p>$29.00</p>
+    </div>
+    <div class="product">
+      <img src="https://via.placeholder.com/200x250" alt="Jeans" />
+      <h3>Dark Jeans</h3>
+      <p>$69.00</p>
+    </div>
+  </section>
+</body>
 @endsection
