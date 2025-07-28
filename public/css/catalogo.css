@@ -1,3 +1,18 @@
+.products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      max-width: 1200px;
+      margin: auto;
+      padding: 1rem;
+    }
+    .product {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
 @media (max-width: 576px) {
     .custom-select-sm {
         font-size: 14px;
