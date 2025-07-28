@@ -4,6 +4,8 @@
 
 @push('css')
     <meta name="auth" content="{{ Auth::check() ? '1' : '0' }}">
+    <meta name="ruta-catalogo" content="{{ route('catalogo') }}">
+    <meta name="ruta-vaciar" content="{{ route('carrito.vaciar') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .producto-img {
@@ -101,9 +103,11 @@
                     <i class="bi bi-arrow-left me-1"></i> Seguir comprando
                 </a>
 
-                <a href="{{ route('carrito.vaciar') }}" class="btn btn-outline-secondary fw-semibold">
-                    <i class=""></i> vaciar carrito
-                </a>
+                <form id="form-vaciar">
+                    <button type="button" class="btn btn-danger fw-semibold" id="vaciar-carrito">
+                        <i class="bi bi-trash-fill me-1"></i> Vaciar carrito
+                    </button>
+                </form>
 
                 <a href="" class="btn btn-success fw-semibold">
                     <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
