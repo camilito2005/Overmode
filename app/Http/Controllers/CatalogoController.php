@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Storage;
 
 class CatalogoController extends Controller
 {
+    public function Productos(){
+        return view('catalogo.detalles_old');
+    }
     //
     public function Catalogo()
     {
