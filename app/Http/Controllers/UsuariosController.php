@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class UsuariosController extends Controller
 {
     
-    //
     public function index()
     {
         return view('index');
