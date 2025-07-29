@@ -109,5 +109,8 @@
             </div>
         </section>
         
+        {{-- FOOTER --}}
+        @include('layouts.footer')
+
     </body>
 @endsection
