@@ -125,6 +125,5 @@
            
         </script>
     @endpush
-    {{-- @include('layouts.footer') --}}
 
 @endsection
