@@ -1,16 +1,17 @@
+body {
+    background-color: #f9f9f9;
+}
 
-        body {
-            background-color: #f9f9f9;
-        }
-        .form-container {
-            max-width: 500px;
-            margin: 4rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+.form-container {
+    max-width: 500px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
