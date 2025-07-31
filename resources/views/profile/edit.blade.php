@@ -4,6 +4,13 @@
             {{ __('Perfil') }}
         </h2>
     </x-slot>
+    @push('css')
+        @section('title', 'Overmode - Perfil de ususario')
+    @endpush
+
+    @section('icono')
+        <link rel="shortcut icon" href="{{ asset('storage/iconos/perfil.png') }}" type="image/x-icon">
+    @endsection
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
