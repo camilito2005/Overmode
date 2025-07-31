@@ -1,4 +1,8 @@
 @extends('layouts.menu')
+@section('titulo', 'Overmode - Usuarios')
+@push('css')
+    <link rel="shortcut icon" href="{{asset('storage/iconos/usuario.png')}}" type="image/x-icon">
+    @endpush
 @section('contenido')
     @if (session('mensaje'))
         @include('layouts.alertas', [

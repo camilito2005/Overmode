@@ -1,7 +1,11 @@
 @extends('layouts.menu')
 @push('css')
     <link rel="stylesheet" href="{{ asset('css/formulario.css') }}">
+    <link rel="shortcut icon" href="{{asset('storage/iconos/agregar.png')}}" type="image/x-icon">
 @endpush
+@section('titulo')
+    Overmode - Registrar usuario
+@endsection
 @section('contenido')
     @if (session('mensaje'))
         @include('layouts.alertas', [
