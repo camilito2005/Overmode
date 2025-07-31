@@ -1,8 +1,9 @@
 @extends('layouts.menu')
-@section('titulo', 'Detalles')
+@section('titulo', 'Overmode - Detalles del Producto')
 @push('css')
     <meta name="auth" content="{{ Auth::check() ? '1' : '0' }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="shortcut icon" href="{{asset('storage/iconos/detalles-del-producto.png')}}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/detalles_old.css') }}">
 @endpush
