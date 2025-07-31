@@ -3,6 +3,16 @@
 @section('name', 'Login')
 @section('contenido') --}}
 <x-app-layout>
+    {{-- le agrego el titulo usando estas plantillas --}}
+    @push('css')
+        @section('title', 'Overmode - Inicia sesión')
+    @endpush
+
+    @push('icono')
+        <link rel="shortcut icon" href="{{ asset('storage/iconos/login.png') }}" type="image/x-icon">
+    @endpush
+
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Overmode') }}
