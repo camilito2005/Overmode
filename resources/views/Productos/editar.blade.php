@@ -2,6 +2,12 @@
 
 @section('contenido') --}}
 <x-app-layout>
+    @section('title')
+        Overmode - Editar Producto
+    @endsection
+    @section('icono')
+        <link rel="shortcut icon" href="{{ asset('storage/iconos/diseno-de-producto.png') }}" type="image/x-icon">
+    @endsection
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Editar Producto') }}
@@ -27,7 +33,8 @@
                     'type' => session('type'),
                 ])
             @endif
-            <form action="{{ route('productos.actualizar', $producto->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('productos.actualizar', $producto->id) }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
 
                 @method('PUT')
@@ -144,7 +151,7 @@
                 </div>
             </form>
             @push('js')
-            <script src="{{asset('js/variantes.js')}}"></script>
+                <script src="{{ asset('js/variantes.js') }}"></script>
             @endpush
         </div>
     </x-guest-layout>
