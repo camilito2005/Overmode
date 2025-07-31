@@ -34,7 +34,6 @@ class PasswordResetLinkController extends Controller
         $status = Password::sendResetLink( // Enviamos el enlace de restablecimiento de contraseña
             $request->only('email') // Solo necesitamos el correo electrónico
         );
-        dump("estado: ".$status);
         if ($status == Password::RESET_LINK_SENT) { // 
             return back()->with('status', __($status)); // Si el enlace se envió correctamente, redirigimos al usuario a la página anterior con un mensaje de éxito
         }
