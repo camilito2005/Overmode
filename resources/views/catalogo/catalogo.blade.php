@@ -1,10 +1,11 @@
 @extends('layouts.menu')
 @section('titulo')
-    catalogo
+    Overmode - Catalogo
 @endsection
 @push('css')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/catalogo.css') }}">
+    <link rel="shortcut icon" href="{{asset('storage/iconos/tienda.png')}}" type="image/x-icon">
     <!-- En tu layout (ej. layouts.menu) -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
