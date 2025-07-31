@@ -1,5 +1,11 @@
 @extends('layouts.menu')
 @section('contenido')
+@section('titulo')
+    Overmode - Productos
+@endsection
+@push('css')
+    <link rel="shortcut icon" href="{{asset('storage/iconos/catalogar.png')}}" type="image/x-icon">
+@endpush
     <div class="container mt-4">
 
         @if (session('mensaje'))
