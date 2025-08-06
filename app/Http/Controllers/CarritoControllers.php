@@ -196,9 +196,10 @@ class CarritoControllers extends Controller
                 // return redirect()->back()->with('success', 'Carrito vaciado correctamente.');
                 return redirect()->route('catalogo')->with('mensaje', 'Carrito vaciado correctamente.');
             }
-        }
+        } else {
 
-        return redirect()->back()->with('error', 'No se pudo vaciar el carrito.');
+            return redirect()->back()->with('mensaje', 'No se pudo vaciar el carrito, no hay sesion activa');
+        }
     }
     public function ActualizarCarrito(Request $request)
     {
