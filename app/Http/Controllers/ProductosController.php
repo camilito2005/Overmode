@@ -202,10 +202,21 @@ class ProductosController extends Controller
     public function Eliminar($id)
     {
         $productos = Productosmodel::findOrFail($id);
+        // dump($productos);
 
         if (!$productos) {
             return redirect()->route('productos.listar')->with('mensaje', 'error');
         }
+
+        // elimino la foto del producto
+        if ($productos->imagen_url) { // Verifico si existe una imagen asociada al producto
+            $imagePath = str_replace('public/storage/', 'public/', $productos->imagen_url); // Reemplazo la ruta para que coincida con el disco 'public'
+            if (Storage::disk('public')->exists($imagePath)) {// Verifico si el archivo existe en el disco 'public'
+                Storage::disk('public')->delete($imagePath); // Elimino el archivo de imagen
+            }
+        }
+        // dd($productos);
+        // public/productos/RKnJIhoqHWlJSTlN0AasA7zruZaH0gNZvSLX3G4x.jpg"
 
         $productos->delete($id);
         return redirect()->route('productos.listar')->with('mensaje', 'usuario eliminado correctamente');
