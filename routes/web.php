@@ -24,7 +24,7 @@ Route::post('/Carrito/Agregar', [CarritoControllers::class, 'AggCarrito'])->name
 Route::get('/Carrito/Ver', [CarritoControllers::class, 'VerCarrito'])->name('carrito.ver');
 Route::post('/Carrito/Actualizar', [CarritoControllers::class, 'ActualizarCarrito'])->name('carrito.actualizar');
 Route::delete('/Carrito/Eliminar/{id}', [CarritoControllers::class, 'EliminarItem'])->name('carrito.eliminar');
-Route::get('/Carrito/Vaciar', [CarritoControllers::class, 'VaciarCarrito'])->name('carrito.vaciar');
+Route::delete('/Carrito/Vaciar', [CarritoControllers::class, 'VaciarCarrito'])->name('carrito.vaciar');
 
 
 Route::middleware('auth')->group(function () {
