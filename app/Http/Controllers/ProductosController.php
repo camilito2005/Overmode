@@ -62,9 +62,6 @@ class ProductosController extends Controller
             $path = $request->file('imagen_url')->store('productos', 'public');
             $publicPath = Storage::url($path); // da: /storage/productos/archivo.jpg
 
-            // dump("Ruta interna (real): " . storage_path("app/public/productos"));
-            // dump("Archivo guardado: $path");
-            // dump("Archivo existe: " . (Storage::disk('public')->exists($path) ? 'Sí' : 'No'));
         }
 
         $productos = Productosmodel::create([
