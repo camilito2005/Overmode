@@ -104,7 +104,8 @@
                     <i class="bi bi-arrow-left me-1"></i> Seguir comprando
                 </a>
 
-                <form id="form-vaciar">
+                <form action="{{route('carrito.vaciar')}}" method="POST">
+                    @csrf
                     <button type="button" class="btn btn-danger fw-semibold" id="vaciar-carrito">
                         <i class="bi bi-trash-fill me-1"></i> Vaciar carrito
                     </button>
