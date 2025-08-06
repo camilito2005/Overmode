@@ -92,9 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="bi bi-arrow-left me-1"></i> Seguir comprando
                 </a>
 
-                <a href="${RutaVaciar}" class="btn btn-outline-secondary fw-semibold">
-                    <i class=""></i> vaciar carrito
-                </a>
+                <form id="form-vaciar" class="btn btn-outline-secondary fw-semibold">
+                    <button type="button" class="btn btn-danger fw-semibold" id="vaciar-carrito">
+                        <i class="bi bi-trash-fill me-1"></i> Vaciar carrito
+                    </button>
+                </form>
 
                 <a href="" class="btn btn-success fw-semibold">
                     <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
@@ -206,15 +208,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
     document.querySelector('#vaciar-carrito').addEventListener('click', e => {
         e.preventDefault();
+        console.log(auth);
 
         if (auth === '0') {
             localStorage.removeItem('carrito');
+            localStorage.clear('carrito');
             alert('Carrito local vaciado.');
             location.reload();
         } else {
-            fetch('/carrito/vaciar', {
+            fetch('/Carrito/Vaciar', {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
