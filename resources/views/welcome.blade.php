@@ -7,7 +7,7 @@
 @push('css')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <link rel="shortcut icon" href="{{asset('storage/iconos/hogar.png')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('storage/iconos/hogar.png') }}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -74,16 +74,41 @@
                     Desde nuestros inicios, trabajamos para seleccionar cuidadosamente cada prenda, ofreciendo colecciones
                     que evolucionan con cada temporada.
                 </p>
-            </div>
+                {{-- contenedor para poner las imagenes de los integrantes del grupo --}}
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <img src="{{ asset('storage/camilo.jpg') }}" alt="Camilo" class="img-fluid rounded-circle mb-2"
+                            style="width: 200px; height: 180px;">
+                        <h5>Camilo</h5>
+                        <p>Desarrollador Backend</p>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="{{ asset('storage/camilo.jpg') }}" alt="Camilo" class="img-fluid rounded-circle mb-2"
+                            style="width: 200px; height: 180px;">
+                        <h5>Camilo</h5>
+                        <p>Desarrollador Frontend</p>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="{{ asset('storage/camilo.jpg') }}" alt="Camilo" class="img-fluid rounded-circle mb-2"
+                            style="width: 200px; height: 180px;">
+                        <h5>Camilo</h5>
+                        <p>Diseñador Gráfico</p>
+                    </div>
+                </div>
         </section>
-
+        @if (session('mensaje'))
+            <div class="alert alert-{{ session('color') }} alert-dismissible fade show" role="alert">
+                <strong>{{ session('tipo') }}!</strong> {{ session('mensaje') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         {{-- SECCIÓN CONTÁCTANOS --}}
         <section class="py-5" id="contacto">
             <div class="container">
                 <h2 class="text-center mb-4">Contáctanos</h2>
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <form action="#" method="POST">
+                        <form action="{{route('Contactanos')}}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="nombre" class="form-label">Nombre</label>
@@ -101,15 +126,15 @@
                         </form>
                     </div>
                     <div class="col-md-6 d-flex flex-column justify-content-center">
-                        <p><strong>📍 Dirección:</strong> Calle 123, Bogotá, Colombia</p>
-                        <p><strong>📞 Teléfono:</strong> +57 300 123 4567</p>
-                        <p><strong>📧 Email:</strong> contacto@overmode.com</p>
+                        <p><strong>📍 Dirección:</strong> Carrera 9 #53-29, cartagena, Colombia</p>
+                        <p><strong>📞 Teléfono:</strong> +57 300 647 988</p>
+                        <p><strong>📧 Email:</strong> Camilo@overmode.com</p>
                         <p><strong>⏰ Horario:</strong> Lunes a Viernes de 9:00 a.m. a 6:00 p.m.</p>
                     </div>
                 </div>
             </div>
         </section>
-        
+
         {{-- FOOTER --}}
         @include('layouts.footer')
 
