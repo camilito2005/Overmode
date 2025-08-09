@@ -22,7 +22,7 @@
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
                 <h5 class="text-uppercase mb-4 font-weight-bold">Contacto</h5>
                 <p><i class="bi bi-house-door me-2"></i> Cartagena, Colombia</p>
-                <p><i class="bi bi-envelope me-2"></i> contacto@overmode.com</p>
+                <p><i class="bi bi-envelope me-2"></i> Camilo@overmode.com</p>
                 <p><i class="bi bi-telephone me-2"></i> +57 300 123 4567</p>
             </div>
 
