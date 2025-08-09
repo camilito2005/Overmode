@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('precio', 8, 2);// Precio del producto
             $table->string('marca'); // Marca del producto
             $table->unsignedBigInteger('categoria_id')->constrained('categorias')->onDelete('cascade'); // ID de la categoría a la que pertenece el producto
+            $table->unsignedBigInteger('subcategoria_id')->nullable()->constrained('subcategorias')->onDelete('cascade'); // ID de la subcategoría a la que pertenece el producto
             $table->string('imagen_url')->nullable(); // URL o ruta de la imagen del producto
             $table->timestamps();
         });
