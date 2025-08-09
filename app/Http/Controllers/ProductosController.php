@@ -9,6 +9,7 @@ use App\Models\TallaModel;
 use App\Models\ColorModel;
 use App\Models\InventarioModel;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SubcategoriasModel;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -37,7 +38,9 @@ class ProductosController extends Controller
         $colores = ColorModel::all(); // Obtener todos los colores
         $tallas = TallaModel::all(); // Obtener todas las tallas
         $categorias = categoriamodel::all();
-        return view('productos.formulario', compact('categorias', 'tallas', 'colores'));
+        $subcategorias = SubcategoriasModel::all(); // Obtener todas las subcategorías
+
+        return view('productos.formulario', compact('categorias','subcategorias', 'tallas', 'colores'));
     }
     public function Guardar(Request $request)
     {
