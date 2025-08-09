@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contactos;
 use Illuminate\Http\Request;
 use App\Models\UsuarioModel;
 use App\Models\Rolmodel;
+use App\Models\ContactosModel;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Auth;
 
 class UsuariosController extends Controller
@@ -138,5 +141,25 @@ class UsuariosController extends Controller
         }
         $usuario->delete(); // Eliminar el usuario
         return redirect()->route('usuarios.listar')->with(['mensaje' => 'Usuario eliminado exitosamente.', 'tipo' => 'success', 'color' => 'verde']);
+    }
+    public function Contactanos(request $request){
+        // dd($request->all());
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'correo' => 'required|email|max:255',
+            'mensaje' => 'required|string|max:1000',
+        ]);
+
+        $contacto = ContactosModel::create([
+            'nombre' => $request->input('nombre'),
+            'correo' => $request->input('correo'),
+            'mensaje' => $request->input('mensaje'),
+        ]);
+        if ($contacto->save()) {
+            return redirect()->route('index')->with(['mensaje' => 'Mensaje enviado exitosamente.', 'tipo' => 'success', 'color' => 'verde']);
+        } else {
+            return redirect()->back()->with(['mensaje' => 'Error al enviar el mensaje.', 'tipo' => 'error', 'color' => 'rojo']);
+        }
+
     }
 }
