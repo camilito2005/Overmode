@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CarritoControllers;
 use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\TallasController;
 use App\Http\Controllers\ColoresController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ProductosController::class, 'Home'])->name('index');
 Route::get('/usuarios/formulario', [UsuariosController::class, 'Form_html'])->name('usuarios.formulario');
 Route::post('/usuarios/registrar', [UsuariosController::class, 'Registrar'])->name('usuarios.registrar');
+Route::post('/Contactanos', [UsuariosController::class, 'Contactanos'])->name('Contactanos');
 
 Route::get('/Catalogo', [CatalogoController::class, 'Catalogo'])->name('catalogo');
 Route::get('/Catalogo/catalogo', [CatalogoController::class, 'Productos'])->name('Productos');
@@ -52,6 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/categorias/guardar', [CategoriasController::class, 'guardar'])->name('categorias.agregar');
     Route::put('/categorias/Actualizar/{id}', [CategoriasController::class, 'Actualizar'])->name('categorias.Actualizar');
     Route::delete('/categorias/eliminar/{id}', [CategoriasController::class, 'Eliminar'])->name('categorias.eliminar');
+
+    Route::post('/subcategorias/guardar', [SubcategoriaController::class, 'Guardar'])->name('subcategorias.agregar');
 
     Route::post('/Tallas/agregar', [TallasController::class, 'Agregar'])->name('Tallas.agregar');
     Route::put('/Tallas/Actualizar/{id}', [TallasController::class, 'Actualizar'])->name('tallas.actualizar');
