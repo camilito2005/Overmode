@@ -78,6 +78,38 @@
                     <x-input-error :messages="$errors->get('categoria_id')" class="mt-2" />
                 </div>
 
+                {{-- subcategorias --}}
+                <div class="mt-4">
+                    <x-input-label for="subcategoria_id" :value="__('Subcategoría')" />
+                    <select name="subcategoria_id" id="subcategoria_id"
+                        class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="">Seleccione una subcategoría</option>
+                        @foreach ($subcategorias as $subcategoria)
+                            <option value="{{ $subcategoria->id }}"
+                                {{ old('subcategoria_id') == $subcategoria->id ? 'selected' : '' }}>
+                                {{ $subcategoria->subcategoria }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('subcategoria_id')" class="mt-2" />
+                </div>
+                {{-- subsubcategorias --}}
+                <div class="mt-4">
+                    <x-input-label for="parent_id" :value="__('Sub-sub-categoría')" />
+                    <select name="parent_id" id="parent_id"
+                        class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="">Seleccione una sub-sub-categoría</option>
+                        @foreach ($subsubcategorias as $otrascategoria)
+                            <option value="{{ $otrascategoria->id }}"
+                                {{ old('parent_id') == $subcategoria->parent_id ? 'selected' : '' }}>
+                                {{ $otrascategoria->subcategoria }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <x-input-error :messages="$errors->get('parent_id')" class="mt-2" />
+                </div>
+
                 <!-- Marca -->
                 <div class="mt-4">
                     <x-input-label for="marca" :value="__('Marca')" />
@@ -87,9 +119,74 @@
                 </div>
 
 
-                {{-- Combinaciones de inventario --}}
+                {{-- Plantilla oculta para clonar --}}
+                <div id="variante-template" class="flex space-x-4 mb-2 variante-item" style="display: none;">
+                    {{-- Talla --}}
+                    <div class="flex-1">
+                        <select name="variantes[0][talla_id]" class="block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">Talla</option>
+                            @foreach ($tallasDisponibles as $talla)
+                                <option value="{{ $talla->id }}">{{ $talla->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Color --}}
+                    <div class="flex-1">
+                        <select name="variantes[0][color_id]" class="block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">Color</option>
+                            @foreach ($coloresDisponibles as $color)
+                                <option value="{{ $color->id }}">{{ $color->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Stock --}}
+                    <div class="flex-1">
+                        <input type="number" name="variantes[0][stock]" min="0"
+                            class="block w-full border-gray-300 rounded-md shadow-sm" value="">
+                    </div>
+                </div>
+
+                {{-- Contenedor de variantes existentes --}}
+                {{-- Plantilla oculta para clonar --}}
+                <div id="variante-template" class="flex space-x-4 mb-2 variante-item" style="display: none;">
+                    {{-- Talla --}}
+                    <div class="flex-1">
+                        <select name="variantes[0][talla_id]" class="block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">Talla</option>
+                            @foreach ($tallasDisponibles as $talla)
+                                <option value="{{ $talla->id }}">{{ $talla->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Color --}}
+                    <div class="flex-1">
+                        <select name="variantes[0][color_id]" class="block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">Color</option>
+                            @foreach ($coloresDisponibles as $color)
+                                <option value="{{ $color->id }}">{{ $color->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Stock --}}
+                    <div class="flex-1">
+                        <input type="number" name="variantes[0][stock]" min="0"
+                            class="block w-full border-gray-300 rounded-md shadow-sm" value="">
+                    </div>
+
+                    {{-- Botón eliminar --}}
+                    <div>
+                        <button type="button" class="btn-eliminar text-red-500 hover:text-red-700">🗑️</button>
+                    </div>
+                </div>
+
+                {{-- Contenedor de variantes existentes --}}
                 <div id="variantes-container">
-                    <x-input-label for="marca" :value="__('Combinacion')" />
+                    <x-input-label for="marca" :value="__('Combinaciones')" />
+
                     @foreach ($inventario as $i => $variante)
                         <div class="flex space-x-4 mb-2 variante-item">
                             {{-- Talla --}}
@@ -126,14 +223,20 @@
                                     class="block w-full border-gray-300 rounded-md shadow-sm"
                                     value="{{ $variante->stock }}">
                             </div>
+
+                            {{-- Botón eliminar --}}
+                            <div>
+                                <button type="button"
+                                    class="btn-eliminar text-red-500 hover:text-red-700">🗑️</button>
+                            </div>
                         </div>
                     @endforeach
-                    {{-- Botón para agregar más variantes --}}
-                    <button type="button" id="agregar-variante" class="mt-2 text-sm text-blue-500 hover:underline">
-                        + Agregar otra combinación
-                    </button>
                 </div>
 
+                {{-- Botón para agregar variantes --}}
+                <button type="button" id="agregar-variante" class="mt-2 text-sm text-blue-500 hover:underline">
+                    + Agregar otra combinación
+                </button>
                 <!-- Imagen -->
                 <div class="mt-4">
                     <x-input-label for="imagen_url" :value="__('Imagen del producto')" />
