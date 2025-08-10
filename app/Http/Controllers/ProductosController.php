@@ -38,9 +38,10 @@ class ProductosController extends Controller
         $colores = ColorModel::all(); // Obtener todos los colores
         $tallas = TallaModel::all(); // Obtener todas las tallas
         $categorias = categoriamodel::all();
-        $subcategorias = SubcategoriasModel::all(); // Obtener todas las subcategorías
+        $subcategorias = SubcategoriasModel::whereNull('parent_id')->get(); // Obtener todas las subcategorías que no son sub-subcategorías
+        $subsubcategorias = SubcategoriasModel::whereNotNull('parent_id')->get(); // Obtener todas las sub-subcategorías
 
-        return view('productos.formulario', compact('categorias','subcategorias', 'tallas', 'colores'));
+        return view('productos.formulario', compact('categorias','subcategorias','subsubcategorias', 'tallas', 'colores'));
     }
     public function Guardar(Request $request)
     {
@@ -49,6 +50,8 @@ class ProductosController extends Controller
             'descripcion' => 'required|string|max:1000',
             'precio' => 'required|numeric|min:0',
             'categoria_id' => 'required|exists:categorias,id',
+            'subcategoria_id' => 'nullable|exists:subcategorias,id', // Validar que la subcategoría exista
+            'parent_id' => 'nullable|exists:subcategorias,id', // Validar que la subcategoría padre exista
             'marca' => 'required|string|max:255',
             'imagen_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'variantes' => 'array', // Validar que variantes sea un array
@@ -72,6 +75,8 @@ class ProductosController extends Controller
             'descripcion' => $request->input('descripcion'),
             'precio' => $request->input('precio'),
             'categoria_id' => $request->input('categoria_id'),
+            'subcategoria_id' => $request->input('subcategoria_id'), // Guardar la subcategoría si se proporciona
+            'parent_id' => $request->input('parent_id'), // Guardar el ID de la subcategoría padre si se proporciona
             'marca' => $request->input('marca'),
             'imagen_url' => $publicPath,
         ]);
@@ -101,7 +106,7 @@ class ProductosController extends Controller
             
         }
         // $productoss = Productosmodel::with(['inventario'])->get(); // 
-        $productos = Productosmodel::with(['categoria', 'inventario.talla', 'inventario.color'])->get();
+        $productos = Productosmodel::with(['categoria','subcategoria','parent', 'inventario.talla', 'inventario.color'])->get();
 
         return view('Productos.productos', compact('productos'));
     }
@@ -116,8 +121,10 @@ class ProductosController extends Controller
         $tallasDisponibles = TallaModel::all(); // Obtener todas las tallas
         $coloresDisponibles = ColorModel::all(); // Obtener todos los colores
         $categorias = categoriamodel::all(); // Obtener todas las categorías
+        $subcategorias = SubcategoriasModel::whereNull('parent_id')->get(); // Obtener todas las subcategorías que no son sub-subcategorías
+        $subsubcategorias = SubcategoriasModel::whereNotNull('parent_id')->get(); // Obtener todas las sub-subcategorías
         
-        return view('productos.editar', compact('producto', 'inventario', 'stock', 'tallasDisponibles', 'coloresDisponibles', 'categorias'));
+        return view('productos.editar', compact('producto', 'inventario', 'stock', 'tallasDisponibles', 'coloresDisponibles', 'categorias','subcategorias','subsubcategorias'));
     }
     public function Actualizar(Request $request, $id)
     {
@@ -126,6 +133,8 @@ class ProductosController extends Controller
             'descripcion' => 'required|string|max:1000',
             'precio' => 'required|numeric|min:0',
             'categoria_id' => 'required|exists:categorias,id',
+            'subcategoria_id' => 'nullable|exists:subcategorias,id', // Validar que la subcategoría exista
+            'parent_id' => 'nullable|exists:subcategorias,id', // Validar que la subcategoría padre exista
             'marca' => 'required|string|max:255',
             'imagen_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'variantes' => 'nullable|array', // Validar que variantes sea un array
@@ -155,6 +164,8 @@ class ProductosController extends Controller
             'descripcion' => $request->input('descripcion'),
             'precio' => $request->input('precio'),
             'categoria_id' => $request->input('categoria_id'),
+            'subcategoria_id' => $request->input('subcategoria_id'), // Actualizar la subcategoría si se proporciona
+            'parent_id' => $request->input('parent_id'), // Actualizar el ID de la subcategoría padre si se proporciona
             'marca' => $request->input('marca'),
             'imagen_url' => $publicPath,
         ]);
