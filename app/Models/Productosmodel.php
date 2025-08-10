@@ -22,6 +22,8 @@ class Productosmodel extends Model
         'descripcion',
         'precio',
         'categoria_id',
+        'subcategoria_id',
+        'parent_id', // Agregado para manejar subcategorías
         'marca',
         'imagen_url',
     ];
@@ -31,11 +33,15 @@ class Productosmodel extends Model
     {
         return $this->belongsTo(categoriamodel::class);
     }
+    public function subcategoria()
+    {
+        return $this->belongsTo(SubcategoriasModel::class, 'subcategoria_id');
+    }
+    public function parent()
+    {
+        return $this->belongsTo(SubcategoriasModel::class, 'parent_id');
+    }
 
-    // public function inventario()
-    // {
-    //     return $this->hasMany(InventarioModel::class);
-    // }
     public function inventario()
     {
         return $this->hasMany(InventarioModel::class, 'producto_id');
