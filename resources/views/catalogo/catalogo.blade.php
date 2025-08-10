@@ -5,7 +5,7 @@
 @push('css')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/catalogo.css') }}">
-    <link rel="shortcut icon" href="{{asset('storage/iconos/tienda.png')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('storage/iconos/tienda.png') }}" type="image/x-icon">
     <!-- En tu layout (ej. layouts.menu) -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
@@ -30,7 +30,28 @@
                                 <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                             @endforeach
                         </select>
-
+                    </div>
+                    {{-- subcategoria --}}
+                    <div class="mb-2">
+                        <label for="subcategoria">Subcategoría</label>
+                        <select name="subcategoria_id" id="subcategoria" class="form-select select2"
+                            style="appearance: none;">
+                            <option value="">Todas</option>
+                            @foreach ($subcategorias as $subcategoria)
+                                <option value="{{ $subcategoria->id }}">{{ $subcategoria->subcategoria }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    {{-- subsubcategoria --}}
+                    <div class="mb-2">
+                        <label for="subsubcategoria">subcategoríashijas</label>
+                        <select name="parent_id" id="subsubcategoria" class="form-select select2"
+                            style="appearance: none;">
+                            <option value="">Todas</option>
+                            @foreach ($subsubcategorias as $subsubcategoria)
+                                <option value="{{ $subsubcategoria->id }}">{{ $subsubcategoria->subcategoria }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <!-- Precio -->
@@ -126,7 +147,7 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <a href="{{route('carrito.ver')}}" class="btn btn-info">
+                    <a href="{{ route('carrito.ver') }}" class="btn btn-info">
                         <i class="fa-solid fa-cart-shopping"></i> Ver carrito
                     </a>
                 </div>
