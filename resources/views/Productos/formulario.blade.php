@@ -93,6 +93,23 @@
                                 data-bs-target="#modalAgregarSubcategoria">+</button>
                         </div>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="subcategoria_id" class="form-label">Sub-sub-categoría</label>
+                        <div class="input-group">
+                            <select class="form-select" name="parent_id" id="sub-sub-categoria_id">
+                                <option value="">Seleccione una subsubcategoría</option>
+                                @foreach ($subsubcategorias as $otrascategoria)
+                                    <option value="{{ $otrascategoria->id }}"
+                                        {{ old('parent_id') == $subcategoria->parent_id ? 'selected' : '' }}>
+                                        {{ $otrascategoria->subcategoria }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+                                data-bs-target="#modalAgregarSubSubcategoria">+</button>
+                        </div>
+                    </div>
                     {{--  --}}
 
                     <div class="mb-4">
@@ -168,6 +185,7 @@
     @include('modales.agregar_talla')
     @include('modales.agregar_categoria')
     @include('modales.agregar_subcategorias')
+    @include('modales.agregar_otrascategorias')
     @include('modales.agregar_color')
 
 @endsection
