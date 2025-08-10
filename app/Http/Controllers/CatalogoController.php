@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Productosmodel;
 use App\Models\categoriamodel;
+use App\Models\SubcategoriasModel;
 use App\Models\ColorModel;
 use App\Models\OpinionModel;
 use App\Models\tallamodel;
@@ -22,6 +23,8 @@ class CatalogoController extends Controller
     {
         $productos = Productosmodel::with('inventario.talla', 'inventario.color')->get();
         $categorias = categoriamodel::all();
+        $subcategorias = SubcategoriasModel::wherenull('parent_id')->get(); // obtengo las subcategorias principales
+        $subsubcategorias = SubcategoriasModel::wherenotnull('parent_id')->get();// obtengo las subcategorias hijas
         $marcas = Productosmodel::distinct()->pluck('marca');
 
         // Cambiar aquí: obtener id y nombre
@@ -33,7 +36,7 @@ class CatalogoController extends Controller
 
 
 
-        return view('catalogo.catalogo', compact('productos', 'categorias', 'marcas', 'tallas', 'colores'));
+        return view('catalogo.catalogo', compact('productos', 'categorias', 'subcategorias','subsubcategorias','marcas', 'tallas', 'colores'));
     }
 
     public function Detalles($id)
@@ -42,20 +45,26 @@ class CatalogoController extends Controller
 
         $stock = $producto->inventario->sum('stock');
         $categoria = categoriamodel::find($producto->categoria_id);
+        $subcategoria = SubcategoriasModel::find($producto->subcategoria_id);
+        // obtengo las subcategorias hija que son las que tiene parent_id en la tabla subcategorias
+        $subcategoriashijas = SubcategoriasModel::where('parent_id', $producto->subcategoria_id)->get(); // obtenemos las subcategorias hijas de la subcategoria del producto
 
-        $tallasDisponibles = $producto->inventario
+        $tallasDisponibles = $producto->inventario // Filtramos las tallas que tienen stock mayor a 0
             ->where('stock', '>', 0)
             ->mapWithKeys(function ($item) {
                 return [$item->talla->id => $item->talla->nombre];
             })->unique();
 
-        $coloresDisponibles = $producto->inventario
+        $coloresDisponibles = $producto->inventario // Filtramos los colores que tienen stock mayor a 0
             ->where('stock', '>', 0)
             ->mapWithKeys(function ($item) {
                 return [$item->color->id => $item->color->nombre];
             })->unique();
 
-        $relacionados = Productosmodel::where('categoria_id', $producto->categoria_id)
+        $relacionados = Productosmodel::where('categoria_id', $producto->categoria_id) // Obtenemos productos relacionados por la misma categoría
+            ->where('subcategoria_id', $producto->subcategoria_id) // y la misma subcategoría
+            // y la misma subcategoria hija segun el parent_id
+            ->where('parent_id', $producto->parent_id)
             ->where('id', '!=', $producto->id)
             ->limit(4)
             ->get();
@@ -65,6 +74,8 @@ class CatalogoController extends Controller
         return view('catalogo.detalles', compact(
             'producto',
             'categoria',
+            'subcategoria',
+            'subcategoriashijas',
             'tallasDisponibles',
             'coloresDisponibles',
             'stock',
@@ -92,6 +103,15 @@ class CatalogoController extends Controller
         // Filtrar por categoría
         if ($request->filled('categoria_id')) {
             $query->where('categoria_id', $request->categoria_id);
+        }
+
+        if ($request->filled('subcategoria_id')) {
+            $query->where('subcategoria_id', $request->subcategoria_id);
+        }
+
+        // Filtrar por subsubcategoríahija
+        if ($request->filled('parent_id')) {
+            $query->where('parent_id', $request->parent_id);
         }
 
         // Filtrar por marca
@@ -124,13 +144,16 @@ class CatalogoController extends Controller
 
         // También retornamos los filtros disponibles para que la vista no falle
         $categorias = categoriamodel::all();
+        $subcategorias = SubcategoriasModel::wherenull('parent_id')->get(); // obtengo las subcategorias principales
+        $subsubcategorias = SubcategoriasModel::wherenotnull('parent_id')->get();// obtengo las subcategorias hijas
+        // $marcas = Productos
         $marcas = Productosmodel::distinct()->pluck('marca');
         // $tallas = tallamodel::distinct()->pluck('nombre');
         $tallas = tallamodel::all();
         // $colores = ColorModel::distinct()->pluck('nombre');
         $colores = ColorModel::all();
 
-        return view('catalogo.catalogo', compact('productos', 'categorias', 'marcas', 'tallas', 'colores'));
+        return view('catalogo.catalogo', compact('productos', 'categorias', 'subcategorias','subsubcategorias', 'marcas', 'tallas', 'colores'));
     }
     public function Opinion(Request $request, $id)
     {
