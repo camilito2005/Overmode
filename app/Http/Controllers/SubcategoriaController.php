@@ -12,11 +12,13 @@ class SubcategoriaController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'categoria_id' => 'required|exists:categorias,id',
+            'parent_id' => 'nullable|exists:subcategorias,id', // Validar que la subcategoría padre exista
         ]);
 
         $subcategorias = SubcategoriasModel::create([
             'subcategoria' => $request->input('nombre'),
             'categoria_id' => $request->input('categoria_id'),
+            'parent_id' => $request->input('parent_id'), // Guardar el ID de la subcategoría padre si se proporciona
             'created_at' => now(),
             'updated_at' => now(),
         // ])->save();
