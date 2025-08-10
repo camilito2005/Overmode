@@ -38,13 +38,13 @@ function actualizarEstado() {
         btnAgregar.disabled = true;
     }
 
-    // Actualizar inputs ocultos del formulario
+    // Actualizar inputs ocultos
     inputTalla.value = tallaSeleccionada || '';
     inputColor.value = colorSeleccionada || '';
 }
 
 // =====================
-// EVENTOS DE SELECCIÓN DE TALLA Y COLOR
+// EVENTOS DE SELECCIÓN
 // =====================
 tallaChips.forEach(chip => {
     chip.addEventListener('click', () => {
@@ -69,61 +69,68 @@ colorChips.forEach(chip => {
 // =====================
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formAgregarCarrito');
-    console.log(form);
-
-    // ⚠️ CORREGIDO:
-    // Antes: const auth = '{{ Auth::check() ? '1' : '0' }}'; (esto no funciona en archivos JS externos)
-    // Ahora: auth es leído como atributo data en el HTML (recomiendo usar: <meta name="auth" content="{{ Auth::check() }}">)
     const auth = document.querySelector('meta[name="auth"]')?.content || '0';
 
-    // =====================
-    // FORMULARIO: AGREGAR AL CARRITO
-    // =====================
     if (form) {
         form.addEventListener('submit', async function (e) {
-            // Si no está autenticado, manejar con LocalStorage
             if (auth === '0') {
-                e.preventDefault(); // Prevenir envío por navegador
+                e.preventDefault();
 
                 const formData = new FormData(form);
-                console.log('Datos del formulario 1:', Object.fromEntries(formData.entries()));
-                // Validar que se haya seleccionado talla y color
-
                 const data = Object.fromEntries(formData.entries());
-                console.log('Datos del formulario 2:', data);
 
+                // Validar selección
                 if (!data.talla_id || !data.color_id) {
                     alert('Por favor selecciona una talla y un color.');
                     return;
                 }
 
+                // Validar cantidad > 0
+                if (parseInt(data.cantidad) <= 0) {
+                    alert('La cantidad debe ser mayor a 0.');
+                    return;
+                }
+
+                // 🔹 Validar stock
+                const itemStock = inventario.find(i =>
+                    i.talla_id == data.talla_id && i.color_id == data.color_id
+                );
+
+                if (!itemStock) {
+                    alert('Esta combinación no está disponible.');
+                    return;
+                }
+
+                if (parseInt(data.cantidad) > itemStock.stock) {
+                    alert(`Solo hay ${itemStock.stock} unidades disponibles para esta combinación.`);
+                    return;
+                }
+
                 try {
-                    const res = await fetch(form.action, { // Enviar datos al servidor
+                    const res = await fetch(form.action, {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         },
-                        body: formData // Enviar FormData directamente
+                        body: formData
                     });
 
                     if (res.ok) {
                         const producto = {
-                            producto_id: data.producto_id, // ID del producto
-                            talla_id: data.talla_id, // ID de la talla
-                            talla_nombre: document.querySelector(`.talla-chip[data-talla="${data.talla_id}"]`)?.textContent || '', // Nombre de la talla
-                            color_nombre: document.querySelector(`.color-chip[data-color="${data.color_id}"]`)?.textContent || '',// Nombre del color
-                            color_id: data.color_id, // ID del color
-                            nombre: data.nombre, // Nombre del producto
-                            descripcion: data.descripcion, // Descripción del producto
-                            precio: data.precio, // Precio del producto
-                            foto: data.foto,// Foto del producto
-                            cantidad: parseInt(data.cantidad),// Cantidad del producto
+                            producto_id: data.producto_id,
+                            talla_id: data.talla_id,
+                            talla_nombre: document.querySelector(`.talla-chip[data-talla="${data.talla_id}"]`)?.textContent || '',
+                            color_nombre: document.querySelector(`.color-chip[data-color="${data.color_id}"]`)?.textContent || '',
+                            color_id: data.color_id,
+                            nombre: data.nombre,
+                            descripcion: data.descripcion,
+                            precio: data.precio,
+                            foto: data.foto,
+                            cantidad: parseInt(data.cantidad),
                         };
 
-                        let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');// Obtener carrito del LocalStorage
-                        // console.log('Carrito local antes de agregar:', carrito);
+                        let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-                        // Verificar si ya está en el carrito
                         const existente = carrito.find(item =>
                             item.producto_id === producto.producto_id &&
                             item.talla_id === producto.talla_id &&
@@ -131,6 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         );
 
                         if (existente) {
+                            // 🔹 Validar que sumando no supere el stock
+                            if (existente.cantidad + producto.cantidad > itemStock.stock) {
+                                alert(`Ya tienes ${existente.cantidad} en el carrito. Solo puedes agregar ${itemStock.stock - existente.cantidad} más.`);
+                                return;
+                            }
                             existente.cantidad += producto.cantidad;
                         } else {
                             carrito.push(producto);
@@ -148,4 +160,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    });
+});
