@@ -87,20 +87,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="text-end mb-4">
                     <h3 class="fw-bold">Total: ${Number(total).toLocaleString()}</h3>
                 </div>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between mb-4">
                 <a href="${Rutacatalogo}" class="btn btn-outline-secondary fw-semibold">
                     <i class="bi bi-arrow-left me-1"></i> Seguir comprando
                 </a>
 
-                <form id="form-vaciar" class="btn btn-outline-secondary fw-semibold">
+                <form id="form-vaciar">
                     <button type="button" class="btn btn-danger fw-semibold" id="vaciar-carrito">
                         <i class="bi bi-trash-fill me-1"></i> Vaciar carrito
                     </button>
                 </form>
-
+                
                 <a href="" class="btn btn-success fw-semibold">
                     <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
                 </a>
+                </div>
             </div>
             `;
             document.getElementById('carrito-local').innerHTML = html;
