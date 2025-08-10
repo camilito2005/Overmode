@@ -1,25 +1,48 @@
+console.log('Script de variantes cargado');
 
-console.log('Script de variantes cargado'); // Mensaje de depuración para verificar que el script se ha cargado correctamente
-let contador = 1; // Contador para las variantes
+let contador = document.querySelectorAll('#variantes-container .variante-item').length || 0;
 
-document.getElementById('agregar-variante').addEventListener('click', function () { // escucha el evento click para agregar una nueva variante
-    const contenedor = document.getElementById('variantes-container'); // selecciona el contenedor de variantes
-    const nuevaVariante = document.querySelector('.variante-item').cloneNode(true); // Clona el primer elemento variante
+const contenedor = document.getElementById('variantes-container');
+const btnAgregar = document.getElementById('agregar-variante');
+const template = document.getElementById('variante-template');
 
-    // Limpia los valores del nuevo clon
-    nuevaVariante.querySelectorAll('select, input').forEach((el) => {
+function agregarVariante() {
+    if (!template) {
+        console.error('No se encontró el template para variantes');
+        return;
+    }
+
+    // Clonar plantilla
+    const nuevaVariante = template.cloneNode(true);
+    nuevaVariante.style.display = ''; // Mostrar el clon
+
+    // Limpiar y actualizar names
+    nuevaVariante.querySelectorAll('select, input').forEach(el => {
         if (el.tagName === 'SELECT') el.selectedIndex = 0;
         else el.value = '';
-    }); // Limpia los valores de los selects e inputs
 
-    // Renombra los atributos name con el nuevo índice
-    nuevaVariante.querySelectorAll('select, input').forEach((el) => {
         if (el.name.includes('variantes')) {
-            const nuevoName = el.name.replace(/\[\d+\]/, `[${contador}]`);
-            el.name = nuevoName;
-        } // Renombra el atributo name de los selects e inputs
+            el.name = el.name.replace(/\[\d+\]/, `[${contador}]`);
+        }
     });
 
-    contador++; // Incrementa el contador para la siguiente variante
-    contenedor.appendChild(nuevaVariante); // Agrega el nuevo clon al contenedor
+    contador++;
+    contenedor.appendChild(nuevaVariante);
+}
+
+function eliminarVariante(boton) {
+    const variante = boton.closest('.variante-item');
+    if (variante) variante.remove();
+}
+
+// Evento agregar
+if (btnAgregar) {
+    btnAgregar.addEventListener('click', agregarVariante);
+}
+
+// Evento eliminar (delegado para funcionar en elementos existentes y nuevos)
+contenedor.addEventListener('click', function (e) {
+    if (e.target.classList.contains('btn-eliminar')) {
+        eliminarVariante(e.target);
+    }
 });
