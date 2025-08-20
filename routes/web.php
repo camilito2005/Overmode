@@ -8,8 +8,12 @@ use App\Http\Controllers\CarritoControllers;
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\SubcategoriaController;
 use App\Http\Controllers\TallasController;
+use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\ColoresController;
 use Illuminate\Support\Facades\Route;
+
+require __DIR__.'/api.php';
+
 
 Route::get('/', [ProductosController::class, 'Home'])->name('index');
 Route::get('/usuarios/formulario', [UsuariosController::class, 'Form_html'])->name('usuarios.formulario');
@@ -27,6 +31,9 @@ Route::get('/Carrito/Ver', [CarritoControllers::class, 'VerCarrito'])->name('car
 Route::post('/Carrito/Actualizar', [CarritoControllers::class, 'ActualizarCarrito'])->name('carrito.actualizar');
 Route::delete('/Carrito/Eliminar/{id}', [CarritoControllers::class, 'EliminarItem'])->name('carrito.eliminar');
 Route::delete('/Carrito/Vaciar', [CarritoControllers::class, 'VaciarCarrito'])->name('carrito.vaciar');
+// Ruta para crear un pedido desde el carrito pero que reciba tanto GET como POST
+Route::match(['get', 'post'], '/checkout/pedido', [PedidosController::class, 'crearDesdeCarrito'])->name('checkout.pedido');
+// Route::post('/checkout/pedido', [PedidosController::class, 'crearDesdeCarrito'])->name('checkout.pedido');
 
 
 Route::middleware('auth')->group(function () {
@@ -66,6 +73,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/colores/Eliminar/{id}', [ColoresController::class, 'Eliminar'])->name('colores.eliminar');
 
     Route::post('/sincronizar-carrito' , [CarritoControllers::class, 'Sincronizar'])->name('sincronizar');
+    Route::get('/api/pedido/pagado', [PedidosController::class, 'pagado'])->name('pedidos.pagado');
+
 });
 
 require __DIR__ . '/auth.php';
