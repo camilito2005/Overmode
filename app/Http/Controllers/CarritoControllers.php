@@ -94,6 +94,18 @@ class CarritoControllers extends Controller
                 ->where('activo', true)
                 ->with('items.producto', 'items.talla', 'items.color')
                 ->first();
+                //si el estado del carrito no es activo, no se mostrará
+            if (!$carrito) {
+                return view('carrito.carrito', [
+                    'carrito' => [], // colección vacía si no hay carrito activo
+                    'total' => 0
+                ]);
+            }
+
+            // obtengo elos item del carrito de la tabla carrito_ITEM QUE Está relacionado con la tabla carrito
+            $carrito_item = CarritoItemModel::where('carrito_id', $carrito->id)
+                ->with('producto', 'talla', 'color')
+                ->get();
 
 
 
@@ -101,6 +113,7 @@ class CarritoControllers extends Controller
             if ($carrito) { // verifica si el carrito existe
                 $itemprocesados = $carrito->items->map(function ($item) {
                     return [
+                        
                         'item_id' => $item->id, // 
                         'producto_id' => $item->producto->id,
                         'nombre' => $item->producto->nombre,
