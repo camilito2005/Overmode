@@ -6,7 +6,8 @@
     <meta name="auth" content="{{ Auth::check() ? '1' : '0' }}">
     <meta name="ruta-catalogo" content="{{ route('catalogo') }}">
     <meta name="ruta-vaciar" content="{{ route('carrito.vaciar') }}">
-    <link rel="shortcut icon" href="{{asset('storage/iconos/carro.png')}}" type="image/x-icon">
+    <meta name="ruta-pago" content="{{ route('checkout.pedido') }}">
+    <link rel="shortcut icon" href="{{ asset('storage/iconos/carro.png') }}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .producto-img {
@@ -104,16 +105,20 @@
                     <i class="bi bi-arrow-left me-1"></i> Seguir comprando
                 </a>
 
-                <form action="{{route('carrito.vaciar')}}" method="POST">
+                <form action="{{ route('carrito.vaciar') }}" method="POST">
                     @csrf
                     <button type="button" class="btn btn-danger fw-semibold" id="vaciar-carrito">
                         <i class="bi bi-trash-fill me-1"></i> Vaciar carrito
                     </button>
                 </form>
 
-                <a href="" class="btn btn-success fw-semibold">
-                    <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
-                </a>
+                <form action="{{ route('checkout.pedido') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="pedido_id" value="{{ $pedido_id ?? '' }}">
+                    <button type="submit" class="btn btn-success fw-semibold">
+                        <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
+                    </button>
+                </form>
             </div>
         @else
             <div class="alert alert-info text-center">
@@ -124,7 +129,9 @@
     @push('js')
         <script src="{{ asset('js/carrito.js') }}"></script>
         <script>
-           
+            const pedido_id = document.querySelector('meta[name="pedido-id"]').content;
+            const auth = document.querySelector('meta[name="auth"]').content;
+            const amount = document.querySelector('meta[name="total"]').content;
         </script>
     @endpush
 
