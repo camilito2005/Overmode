@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const Auth = document.querySelector('meta[name="auth"]').getAttribute('content');
     const Rutacatalogo = document.querySelector('meta[name="ruta-catalogo"]').getAttribute('content');
+    const RutaPago = document.querySelector('meta[name="ruta-pago"]').getAttribute('content');
     const RutaVaciar = document.querySelector('meta[name="ruta-vaciar"]').getAttribute('content');
 
     if (Auth == 0) {
@@ -98,9 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                 </form>
                 
-                <a href="" class="btn btn-success fw-semibold">
-                    <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
-                </a>
+                    <a href="${RutaPago}" class="btn btn-success fw-semibold">
+                            <i class="bi bi-credit-card-2-front me-1"></i> Proceder al pago
+                    </a>
                 </div>
             </div>
             `;
